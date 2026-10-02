@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sensoriamento Remoto — Perguntas e Jogos</title>
+<title>Sensoriamento Remoto — Central de Revisão</title>
 <style>
   :root{
     --card:#1e293b; --card2:#273449; --text:#e2e8f0; --muted:#94a3b8;
@@ -16,7 +16,7 @@
     background:linear-gradient(160deg,#0f172a 0%,#1e293b 60%,#0c4a6e 100%);
     min-height:100vh; color:var(--text); padding:24px 16px;
   }
-  .container{max-width:820px; margin:0 auto;}
+  .container{max-width:860px; margin:0 auto;}
   header{text-align:center; margin-bottom:24px;}
   header h1{font-size:1.7rem; letter-spacing:.5px;}
   header h1 span{color:var(--accent);}
@@ -27,73 +27,62 @@
   @keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
 
   /* nome */
-  .name-card{
-    max-width:460px; margin:40px auto; background:var(--card); border:1px solid #334155;
-    border-radius:16px; padding:34px 28px; text-align:center;
-  }
-  .name-card input{
-    width:100%; background:var(--card2); border:2px solid #334155; border-radius:10px;
-    padding:12px 14px; color:var(--text); font-size:1rem; text-align:center; margin:14px 0;
-  }
+  .name-card{max-width:460px; margin:40px auto; background:var(--card); border:1px solid #334155;
+    border-radius:16px; padding:34px 28px; text-align:center;}
+  .name-card input{width:100%; background:var(--card2); border:2px solid #334155; border-radius:10px;
+    padding:12px 14px; color:var(--text); font-size:1rem; text-align:center; margin:14px 0;}
   .name-card input:focus{outline:none; border-color:var(--accent);}
   .name-card p{color:var(--muted); font-size:.9rem; margin-top:8px;}
 
   /* barra do jogador */
-  .player-bar{
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+  .player-bar{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
     background:var(--card); border:1px solid #334155; border-radius:14px;
-    padding:14px 18px; margin-bottom:16px;
-  }
+    padding:14px 18px; margin-bottom:16px;}
   .player-bar .who b{color:var(--accent); font-size:1.1rem;}
   .player-bar .bank{color:var(--gold); font-weight:700;}
 
-  /* cards de seleção (hub, aulas, níveis) */
+  /* cards de seleção */
   .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
-  .sel-card{
-    background:var(--card); border:1px solid #334155; border-radius:14px;
-    padding:18px; cursor:pointer; transition:.18s; text-align:left;
-  }
+  .sel-card{background:var(--card); border:1px solid #334155; border-radius:14px;
+    padding:18px; cursor:pointer; transition:.18s; text-align:left;}
   .sel-card:hover{transform:translateY(-4px); border-color:var(--accent); box-shadow:0 8px 24px rgba(56,189,248,.15);}
-  .sel-num{
-    display:inline-block; background:var(--accent); color:#0f172a; font-weight:700;
-    border-radius:8px; padding:2px 10px; font-size:.8rem; margin-bottom:8px;
-  }
+  .sel-num{display:inline-block; background:var(--accent); color:#0f172a; font-weight:700;
+    border-radius:8px; padding:2px 10px; font-size:.8rem; margin-bottom:8px;}
   .sel-card h2{font-size:1.02rem; margin-bottom:6px; line-height:1.3;}
+  .sel-card .ic{font-size:2.4rem; margin-bottom:6px;}
   .sel-card small{color:var(--muted);}
   .sel-card .best{margin-top:10px; font-size:.78rem; color:var(--gold);}
   .wide{grid-column:1/-1; text-align:center;}
-  .hub-mix{background:linear-gradient(120deg,#7c3aed33,#0ea5e933);}
-  .hub-jogo{background:linear-gradient(120deg,#f59e0b33,#ef444433);}
-  .hub-jogo .sel-num{background:var(--violet); color:#0f172a;}
-  .hub-card{grid-column:1/-1; display:flex; align-items:center; gap:18px; padding:26px;}
-  .hub-card .ic{font-size:3.2rem; flex-shrink:0;}
-  .hub-card h2{font-size:1.25rem; margin-bottom:6px;}
+  .locked{opacity:.45; filter:grayscale(.6);}
+  .locked:hover{transform:none; border-color:#334155; box-shadow:none; cursor:not-allowed;}
+  .done-badge{color:var(--ok); font-weight:700;}
+  .hub-card{grid-column:1/-1; display:flex; align-items:center; gap:18px; padding:24px;}
+  .hub-card .ic{font-size:3rem; flex-shrink:0;}
   .hub-card small{color:var(--muted); line-height:1.4; display:block;}
   .hub-questions{background:linear-gradient(120deg,#0ea5e933,#22c55e33);}
   .hub-mem{background:linear-gradient(120deg,#f59e0b33,#ef444433);}
+  .group-title{margin:20px 0 10px; font-size:1.05rem; color:var(--violet); letter-spacing:.5px;}
 
-  /* quiz */
+  /* topbar/chips */
   .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;}
   .chip{background:var(--card2); border-radius:20px; padding:6px 14px; font-size:.85rem;}
   .chip b{color:var(--accent);}
   .streak{color:var(--gold);}
   .bar{height:8px; background:var(--card2); border-radius:6px; margin-bottom:20px; overflow:hidden;}
   .bar > div{height:100%; background:linear-gradient(90deg,var(--accent),#818cf8); width:0%; transition:width .3s;}
+
+  /* pergunta / cartões */
   .q-card{background:var(--card); border:1px solid #334155; border-radius:16px; padding:24px;}
   .q-tag{font-size:.75rem; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;}
   .q-text{font-size:1.12rem; line-height:1.5; margin-bottom:20px;}
   .opts{display:flex; flex-direction:column; gap:10px;}
-  .opt{
-    background:var(--card2); border:2px solid transparent; border-radius:12px;
+  .opt{background:var(--card2); border:2px solid transparent; border-radius:12px;
     padding:14px 16px; text-align:left; color:var(--text); font-size:1rem; cursor:pointer;
-    transition:.15s; display:flex; gap:12px; align-items:center; width:100%;
-  }
+    transition:.15s; display:flex; gap:12px; align-items:center; width:100%;}
   .opt:hover:not(:disabled){border-color:var(--accent); transform:translateX(4px);}
   .opt:disabled{cursor:default;}
-  .opt .letter{
-    flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#334155;
-    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem;
-  }
+  .opt .letter{flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#334155;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem;}
   .opt.correct{background:var(--okbg); border-color:var(--ok);}
   .opt.correct .letter{background:var(--ok); color:#052e16;}
   .opt.wrong{background:var(--errbg); border-color:var(--err);}
@@ -107,74 +96,95 @@
   .feedback.ok .verdict{color:var(--ok);}
   .feedback.err .verdict{color:var(--err);}
   .feedback .prize{color:var(--gold); font-weight:700; margin-top:6px;}
-  .prize-pop{
-    position:fixed; top:30%; left:50%; transform:translateX(-50%);
+  .prize-pop{position:fixed; top:30%; left:50%; transform:translateX(-50%);
     color:var(--gold); font-size:2rem; font-weight:800; pointer-events:none;
-    animation:pop 1s forwards; z-index:50; text-shadow:0 2px 10px rgba(0,0,0,.6);
-  }
+    animation:pop 1s forwards; z-index:50; text-shadow:0 2px 10px rgba(0,0,0,.6);}
   @keyframes pop{0%{opacity:0; transform:translate(-50%,10px) scale(.6);} 20%{opacity:1; transform:translate(-50%,-6px) scale(1.15);} 100%{opacity:0; transform:translate(-50%,-40px) scale(1);}}
+  @keyframes shake{0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}}
+  .shake{animation:shake .3s;}
 
   /* resultado */
   .result-card{text-align:center; background:var(--card); border:1px solid #334155; border-radius:16px; padding:36px 24px;}
-  .score-ring{
-    width:150px; height:150px; border-radius:50%; margin:0 auto 18px;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    position:relative;
-  }
+  .score-ring{width:150px; height:150px; border-radius:50%; margin:0 auto 18px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative;}
   .score-ring::before{content:''; position:absolute; inset:12px; border-radius:50%; background:var(--card);}
   .score-ring .pct, .score-ring .lbl{position:relative; z-index:1;}
   .score-ring .pct{font-size:2rem; font-weight:800;}
   .score-ring .lbl{font-size:.75rem; color:var(--muted);}
   .msg{font-size:1.15rem; margin-bottom:6px;}
-  .stats{color:var(--muted); margin-bottom:12px;}
-  .stats .gold, .gold{color:var(--gold); font-weight:700;}
+  .stats{color:var(--muted); margin-bottom:8px;}
+  .gold{color:var(--gold); font-weight:700;}
   .review{text-align:left; margin-top:22px;}
   .review h3{margin-bottom:10px; font-size:1rem;}
   .rev-item{background:var(--card2); border-radius:10px; padding:12px 14px; margin-bottom:8px; font-size:.9rem; line-height:1.45;}
   .rev-item b.ac{color:var(--ok);}
   .rev-item b.er{color:var(--err);}
-  .btn{
-    display:inline-block; background:var(--accent); color:#0f172a; font-weight:700; border:none;
-    border-radius:10px; padding:12px 26px; font-size:1rem; cursor:pointer; transition:.15s;
-  }
+  .aula-line{display:flex; justify-content:space-between; background:var(--card2); border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:.9rem;}
+  .btn{display:inline-block; background:var(--accent); color:#0f172a; font-weight:700; border:none;
+    border-radius:10px; padding:12px 26px; font-size:1rem; cursor:pointer; transition:.15s;}
   .btn:hover{filter:brightness(1.1); transform:translateY(-2px);}
   .btn-ghost{background:var(--card2); color:var(--text); border:1px solid #475569;}
   .btn-sm{padding:8px 16px; font-size:.85rem;}
   .btn-row{margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;}
+  .btn-row.center{justify-content:center;}
+  .btnHub{margin-bottom:4px;}
 
   /* memória */
-  .nivel-card{text-align:center;}
-  .nivel-card .ic{font-size:2.6rem; margin-bottom:8px;}
-  #board{
-    display:grid; gap:8px; margin:0 auto;
-    grid-template-columns:repeat(auto-fit,minmax(96px,1fr));
-    max-width:640px;
-  }
+  #board{display:grid; gap:8px; margin:0 auto; max-width:660px;
+    grid-template-columns:repeat(auto-fit,minmax(100px,1fr));}
   .mcard{perspective:600px; cursor:pointer;}
-  .mcard-inner{
-    position:relative; width:100%; aspect-ratio:3/4.2;
-    transform-style:preserve-3d; transition:transform .4s; border-radius:12px;
-  }
+  .mcard-inner{position:relative; width:100%; aspect-ratio:3/4.2;
+    transform-style:preserve-3d; transition:transform .4s; border-radius:12px;}
   .mcard.flip .mcard-inner{transform:rotateY(180deg);}
-  .mface{
-    position:absolute; inset:0; border-radius:12px; display:flex; flex-direction:column;
+  .mface{position:absolute; inset:0; border-radius:12px; display:flex; flex-direction:column;
     align-items:center; justify-content:center; text-align:center; padding:6px;
-    backface-visibility:hidden; -webkit-backface-visibility:hidden;
-  }
-  .mface-back{
-    background:linear-gradient(140deg,#334155,#1e293b);
-    border:2px solid #475569; font-size:2rem; color:#64748b;
-  }
+    backface-visibility:hidden; -webkit-backface-visibility:hidden;}
+  .mface-back{background:linear-gradient(140deg,#334155,#1e293b); border:2px solid #475569;
+    font-size:2rem; color:#64748b;}
   .mface-front{transform:rotateY(180deg); background:var(--card2); border:2px solid #334155;}
   .mface-front.matched{border-color:var(--ok); background:var(--okbg);}
-  .mface .emo{font-size:2.6rem; line-height:1;}
-  .mface .txt{font-size:.82rem; line-height:1.3; font-weight:700;}
-  .mface .sub{font-size:.72rem; color:var(--muted); margin-top:4px; line-height:1.25;}
-  .mface .swatch{width:60%; aspect-ratio:1; border-radius:10px; margin-bottom:5px;
-    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.72rem;
-    color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.55);}
+  .mface .eico{font-size:2rem; line-height:1; margin-bottom:6px;}
+  .mface .txt{font-size:.85rem; line-height:1.3; font-weight:700;}
+  .mface .def{font-size:.74rem; line-height:1.3; font-style:italic; color:#cbd5e1;}
+  .mface-front.term-face{background:linear-gradient(150deg,#1e3a5f,#1e293b);}
   .mcard.flip{pointer-events:none;}
   .mcard.matchdone{cursor:default;}
+
+  /* relacione */
+  .rel-card{background:var(--card2); border:2px solid #334155; border-radius:12px;
+    padding:12px 16px; cursor:pointer; font-weight:700; text-align:center; transition:.15s;}
+  .rel-card:hover{border-color:var(--accent);}
+  .rel-card.sel{border-color:var(--accent); background:#16324c;}
+  .rel-card.placed{visibility:hidden;}
+  .rel-dest{display:block; width:100%; text-align:left; background:var(--card); border:2px solid #334155;
+    border-radius:12px; padding:12px 16px; margin-bottom:8px; color:var(--text); font-size:.95rem; cursor:pointer; transition:.15s;}
+  .rel-dest:hover:not(:disabled){border-color:var(--accent);}
+  .rel-dest.ok{background:var(--okbg); border-color:var(--ok); cursor:default;}
+  .rel-dest.bad{animation:shake .3s; border-color:var(--err);}
+  .rel-hint{color:var(--muted); font-size:.9rem; margin-bottom:12px;}
+
+  /* quem sou eu */
+  .hint-box{background:var(--card2); border-radius:12px; padding:14px 16px; margin-bottom:14px;}
+  .hint-box li{list-style:none; padding:6px 0; border-bottom:1px dashed #334155; font-size:.98rem; line-height:1.4;}
+  .hint-box li:last-child{border:none;}
+  .hint-box li em{color:var(--accent); font-style:normal; font-weight:700;}
+
+  /* V/F e detetive */
+  .vf-btns{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap;}
+  .vf-btns .btn{flex:1; min-width:140px;}
+  .btn-true{background:var(--ok); color:#04220f;}
+  .btn-false{background:var(--err); color:#fff;}
+  .frase{font-size:1.15rem; line-height:1.55; font-style:italic; border-left:4px solid var(--accent);
+    padding:10px 16px; background:var(--card2); border-radius:0 12px 12px 0; margin-bottom:20px;}
+
+  /* classifique */
+  .cat-btns{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-top:18px;}
+  .cat-btn{background:var(--card2); border:2px solid #334155; border-radius:10px; padding:12px;
+    color:var(--text); font-size:.95rem; cursor:pointer; transition:.15s;}
+  .cat-btn:hover{border-color:var(--accent);}
+  .cat-btn.bad{border-color:var(--err); background:var(--errbg);}
+  .clas-card{font-size:1.4rem; font-weight:800; text-align:center; padding:26px 16px;
+    background:linear-gradient(140deg,#1e3a5f,#1e293b); border:2px solid #475569; border-radius:14px; margin-bottom:14px;}
 
   footer{text-align:center; margin-top:28px; color:var(--muted); font-size:.8rem;}
   @media(max-width:520px){
@@ -188,63 +198,44 @@
 <body>
 <div class="container">
   <header>
-    <h1>🛰️ Sensoriamento <span>Remoto</span></h1>
-    <p>Estude com perguntas e jogos — mesmo jogador, mesmo saldo de prêmios 💰</p>
+    <h1>🛰️ Sensoriamento <span>Remoto</span> — Central de Revisão</h1>
+    <p>Aulas 1 a 6 • mesmo jogador, mesmo saldo de prêmios 💰</p>
   </header>
 
   <!-- TELA: nome -->
-  <section id="nameScreen" class="screen active">
+  <section id="nameScr" class="screen active">
     <div class="name-card">
       <h2>👤 Quem vai jogar?</h2>
       <input type="text" id="nameInput" maxlength="20" placeholder="Seu nome">
       <button class="btn" id="btnName">Começar ▶</button>
-      <p>Seu nome fica salvo e seus prêmios se acumulam nos dois jogos.</p>
+      <p>Seu nome fica salvo e seus prêmios se acumulam em todos os jogos.</p>
     </div>
   </section>
 
-  <!-- TELA: hub (início) -->
+  <!-- TELA: hub -->
   <section id="hub" class="screen">
     <div class="player-bar">
       <div class="who">👤 <b id="pName"></b></div>
       <div class="bank">💰 Prêmios acumulados: <span id="pBank">0</span></div>
       <button class="btn btn-ghost btn-sm" id="btnChangeName">Trocar jogador</button>
     </div>
-    <div class="grid">
-      <div class="sel-card hub-card hub-questions" id="cardQuiz">
-        <div class="ic">❓</div>
-        <div>
-          <span class="sel-num">TESTE</span>
-          <h2>Perguntas</h2>
-          <small>Quiz por aula (Aulas 1–6) ou Modo Geral — acerte e ganhe prêmios que crescem com a sequência 🔥</small>
-        </div>
-      </div>
-      <div class="sel-card hub-card hub-mem" id="cardMem">
-        <div class="ic">🧠</div>
-        <div>
-          <span class="sel-num">JOGO</span>
-          <h2>Jogo da Memória</h2>
-          <small>Sensor + conceito • Satélite + marca • Banda + o que revela — 3 tabuleiros e modo misto</small>
-        </div>
-      </div>
-    </div>
+    <div class="grid" id="hubGrid"></div>
   </section>
 
-  <!-- ===== QUIZ ===== -->
-  <!-- TELA: escolha de aula -->
+  <!-- ===== JOGO 1: QUIZ ===== -->
   <section id="qMenu" class="screen">
     <button class="btn btn-ghost btn-sm btnHub">🏠 Início</button>
-    <p style="margin:12px 0 16px; color:var(--muted); font-size:.95rem;">Escolha uma aula para responder — a resposta e a explicação aparecem após cada seleção.</p>
+    <p style="margin:12px 0 16px; color:var(--muted); font-size:.95rem;">Escolha o filtro: a resposta e a explicação aparecem após cada questão. 3 vidas por tentativa.</p>
     <div class="grid" id="qMenuGrid"></div>
   </section>
 
-  <!-- TELA: quiz -->
   <section id="game" class="screen">
     <div class="topbar">
-      <div class="chip">Aula: <b id="qAula"></b></div>
+      <div class="chip" id="chipModo">Modo: <b id="qModo"></b></div>
       <div class="chip">Questão <b id="qNum"></b>/<span id="qTotal"></span></div>
       <div class="chip">Acertos: <b id="qScore">0</b></div>
-      <div class="chip streak">🔥 Sequência: <b id="qStreak">0</b></div>
-      <div class="chip streak">💰 <b id="qBank">0</b></div>
+      <div class="chip streak" id="chipVidas">❤️ <b id="qVidas">3</b></div>
+      <div class="chip streak">💰 <b id="qCoins">0</b></div>
     </div>
     <div class="bar"><div id="qBar"></div></div>
     <div class="q-card">
@@ -259,1108 +250,949 @@
     </div>
   </section>
 
-  <!-- TELA: resultado do quiz -->
+  <!-- TELA: resultado (quiz e missão) -->
   <section id="result" class="screen">
     <div class="result-card">
-      <div class="score-ring" id="rRing" style="--pct:0">
+      <div class="score-ring" id="rRing">
         <div class="pct" id="rPct">0%</div>
         <div class="lbl">de acertos</div>
       </div>
       <div class="msg" id="rMsg"></div>
       <div class="stats" id="rStats"></div>
-      <div class="gold" id="rBank"></div>
-      <div class="btn-row" style="justify-content:center;">
-        <button class="btn" id="btnAgain">🔁 Jogar de novo</button>
-        <button class="btn btn-ghost" id="btnMenu">🏠 Escolher aula</button>
-      </div>
-      <div class="review">
+      <div class="gold" id="rGold"></div>
+      <div id="rExtra"></div>
+      <div class="btn-row center" id="rBtns"></div>
+      <div class="review" id="rReviewWrap">
         <h3>📋 Revisão das questões</h3>
         <div id="rReview"></div>
       </div>
     </div>
   </section>
 
-  <!-- ===== MEMÓRIA ===== -->
-  <!-- TELA: níveis -->
-  <section id="memMenu" class="screen">
+  <!-- ===== JOGO 6: MISSÃO SATÉLITE ===== -->
+  <section id="misMenu" class="screen">
     <button class="btn btn-ghost btn-sm btnHub">🏠 Início</button>
-    <p style="margin:12px 0 16px; color:var(--muted); font-size:.95rem;">Escolha o tabuleiro: encontre os pares que se combinam — conceito com imagem, satélite com sua marca e banda com o que ela revela.</p>
-    <div class="grid" id="memMenuGrid"></div>
+    <p style="margin:12px 0 16px; color:var(--muted); font-size:.95rem;">A missão acompanha o caminho da informação: da radiação até uma imagem corrigida e utilizável. É preciso acertar pelo menos <b style="color:var(--accent)">60% de cada fase</b> para avançar.</p>
+    <div class="grid" id="misGrid"></div>
   </section>
 
-  <!-- TELA: tabuleiro -->
+  <!-- ===== JOGO 2: MEMÓRIA ===== -->
   <section id="memGame" class="screen">
     <div class="topbar">
-      <div class="chip">Tabuleiro: <b id="mTema"></b></div>
-      <div class="chip">Pares: <b id="mPares">0</b>/<span id="mTotal"></span></div>
+      <div class="chip">🧠 Pares: <b id="mPares">0</b>/<span id="mTotal"></span></div>
       <div class="chip">Tentativas: <b id="mMoves">0</b></div>
       <div class="chip">⏱️ <b id="mTime">0s</b></div>
       <div class="chip streak">💰 <b id="mCoins">0</b></div>
-    </div>
-    <div id="board"></div>
-    <div class="btn-row" style="justify-content:center; margin-top:18px;">
       <button class="btn btn-ghost btn-sm" id="btnMemQuit">Abandonar</button>
     </div>
+    <p class="rel-hint">Cada par junta o conceito à sua definição. Encontre todos os pares!</p>
+    <div id="board"></div>
   </section>
 
-  <!-- TELA: vitória -->
-  <section id="memWin" class="screen">
-    <div class="result-card">
-      <div style="font-size:3.4rem;">🏆</div>
-      <div class="msg" id="wTitle"></div>
-      <div class="stats" id="wStats"></div>
-      <div class="gold" id="wCoins"></div>
-      <div class="btn-row" style="justify-content:center;">
-        <button class="btn" id="btnMemAgain">🔁 Jogar de novo</button>
-        <button class="btn btn-ghost" id="btnMemMenu">🧠 Escolher tabuleiro</button>
+  <!-- ===== JOGO 3: RELACIONE ===== -->
+  <section id="relMenu" class="screen">
+    <button class="btn btn-ghost btn-sm btnHub">🏠 Início</button>
+    <p style="margin:12px 0 16px; color:var(--muted); font-size:.95rem;">Clique em um cartão e depois no destino correto. 4 rodadas com temas diferentes — os destinos mudam de posição a cada rodada.</p>
+    <div class="grid" id="relMenuGrid"></div>
+  </section>
+
+  <section id="relGame" class="screen">
+    <div class="topbar">
+      <div class="chip">Rodada: <b id="relRod"></b></div>
+      <div class="chip">Encaixados: <b id="relOk">0</b>/<span id="relTot"></span></div>
+      <div class="chip">Erros: <b id="relErr">0</b></div>
+      <div class="chip streak">💰 <b id="relCoins">0</b></div>
+      <button class="btn btn-ghost btn-sm" id="btnRelQuit">Abandonar</button>
+    </div>
+    <p class="rel-hint">Selecione um cartão e clique no destino correspondente.</p>
+    <h3 style="margin-bottom:10px; font-size:1rem;">Cartões</h3>
+    <div class="grid" id="relCards" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));"></div>
+    <h3 style="margin:16px 0 10px; font-size:1rem;">Destinos</h3>
+    <div id="relDests"></div>
+  </section>
+
+  <!-- ===== JOGO 4: QUEM SOU EU ===== -->
+  <section id="quemScr" class="screen">
+    <div class="topbar">
+      <div class="chip">Conceito <b id="quemNum"></b>/<span id="quemTot"></span></div>
+      <div class="chip streak">💰 <b id="quemCoins">0</b></div>
+      <button class="btn btn-ghost btn-sm" id="btnQuemQuit">Abandonar</button>
+    </div>
+    <div class="q-card">
+      <div class="q-tag">🕵️ Quem sou eu?</div>
+      <div class="hint-box"><ul id="quemHints"></ul></div>
+      <div class="opts" id="quemOpts"></div>
+      <div class="feedback" id="quemFb"></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btnHint">💡 Revelar outra pista (−prêmio)</button>
+        <button class="btn" id="btnQuemNext">Próximo →</button>
       </div>
+    </div>
+    </section>
+
+  <!-- ===== JOGO 7: V/F COMBO ===== -->
+  <section id="vfScr" class="screen">
+    <div class="topbar">
+      <div class="chip">Afirmação <b id="vfNum"></b>/<span id="vfTot"></span></div>
+      <div class="chip streak">🔥 Combo: <b id="vfCombo">0</b></div>
+      <div class="chip streak">💰 <b id="vfCoins">0</b></div>
+      <button class="btn btn-ghost btn-sm" id="btnVfQuit">Abandonar</button>
+    </div>
+    <div class="bar"><div id="vfBar"></div></div>
+    <div class="q-card">
+      <div class="q-tag">✅ Verdadeiro ou Falso</div>
+      <div class="frase" id="vfFrase"></div>
+      <div class="vf-btns">
+        <button class="btn btn-true" id="btnTrue">✔️ Verdadeiro</button>
+        <button class="btn btn-false" id="btnFalse">✖️ Falso</button>
+      </div>
+      <div class="feedback" id="vfFb"></div>
+      <div class="btn-row"><button class="btn" id="btnVfNext">Próxima →</button></div>
     </div>
   </section>
 
-  <footer>Sensoriamento Remoto • Landsat e Sentinel • <span id="footTotal"></span> questões + jogo da memória 🧠</footer>
+  <!-- ===== JOGO 5: DETETIVE DO ERRO ===== -->
+  <section id="detScr" class="screen">
+    <div class="topbar">
+      <div class="chip">Caso <b id="detNum"></b>/<span id="detTot"></span></div>
+      <div class="chip">Acertos: <b id="detOk">0</b></div>
+      <div class="chip streak">💰 <b id="detCoins">0</b></div>
+      <button class="btn btn-ghost btn-sm" id="btnDetQuit">Abandonar</button>
+    </div>
+    <div class="q-card">
+      <div class="q-tag">🔎 Detetive do erro</div>
+      <div class="frase" id="detFrase"></div>
+      <div class="vf-btns">
+        <button class="btn btn-false" id="btnDetErr">🚩 Há erro!</button>
+        <button class="btn btn-true" id="btnDetOk">✔️ Está correta</button>
+      </div>
+      <div class="feedback" id="detFb"></div>
+      <div class="btn-row"><button class="btn" id="btnDetNext">Próximo caso →</button></div>
+    </div>
+  </section>
+
+  <!-- ===== JOGO 8: CLASSIFIQUE ===== -->
+  <section id="clasScr" class="screen">
+    <div class="topbar">
+      <div class="chip">Cartão <b id="clasNum"></b>/<span id="clasTot"></span></div>
+      <div class="chip">Erros: <b id="clasErr">0</b></div>
+      <div class="chip streak">💰 <b id="clasCoins">0</b></div>
+      <button class="btn btn-ghost btn-sm" id="btnClasQuit">Abandonar</button>
+    </div>
+    <div class="clas-card" id="clasCard"></div>
+    <div class="cat-btns" id="clasCats"></div>
+    <div class="feedback" id="clasFb"></div>
+  </section>
+
+  <!-- TELA: fim de jogo genérica -->
+  <section id="endScr" class="screen">
+    <div class="result-card">
+      <div style="font-size:3.2rem;" id="eIcon"></div>
+      <div class="msg" id="eTitle"></div>
+      <div class="stats" id="eStats"></div>
+      <div class="gold" id="eGold"></div>
+      <div class="btn-row center" id="eBtns"></div>
+    </div>
+  </section>
+
+  <footer>Central de Revisão • Aulas 1–6 • Sentinel e Landsat • sem fórmulas</footer>
 </div>
 
 <script>
-/* =========================================================
-   1) JOGO DE PERGUNTAS — banco de questões
-   Toda questão é gravada com a resposta correta na posição 0 (c:0).
-   Na hora de mostrar, as alternativas são embaralhadas na tela,
-   então a posição da correta muda a cada partida. */
-const AULAS = [
-{
-  num:1, titulo:"O que é Sensoriamento Remoto?", emoji:"🌍",
-  questoes:[
-  {
-    t:"O que é sensoriamento remoto?",
-    o:["Obter informações sobre algo sem tocar nele, usando satélites e aviões",
-       "Examinar um material levando-o para o laboratório",
-       "Medir a temperatura de um solo com termômetro enfiado na terra",
-       "Contar plantas de uma plantação andando entre elas"],
-    c:0,
-    e:"Sensoriamento remoto é obter informações de um alvo à distância, sem contato físico — como o nome diz, 'sentir de longe'. Medições em contato direto (termômetro no solo, laboratório) não são sensoriamento remoto."
-  },
-  {
-    t:"Como é possível 'ver' objetos da Terra a partir de um satélite, sem tocá-los?",
-    o:["Detectando a luz (radiação eletromagnética) que vem do objeto",
-       "Através de cabos que ligam o satélite ao chão",
-       "Mandando sondas pousarem em cada ponto do terreno",
-       "Adivinhando apenas pela posição geográfica do objeto"],
-    c:0,
-    e:"O mecanismo que viabiliza o sensoriamento remoto é a radiação eletromagnética (REM) — luz, no sentido amplo — que sai do Sol ou do próprio objeto e é detectada pelo sensor. Não há contato nem cabos."
-  },
-  {
-    t:"O que é um sensor?",
-    o:["O aparelho que captura e registra a radiação que vem do alvo — o 'olho' do sistema",
-       "O veículo que transporta os instrumentos pela órbita",
-       "A pessoa que interpreta a imagem no computador",
-       "A área do terreno que está sendo fotografada"],
-    c:0,
-    e:"Sensor é o instrumento que 'enxerga': detecta e registra a radiação vinda do alvo. O veículo que o carrega é outra coisa: a plataforma."
-  },
-  {
-    t:"O que é uma plataforma em sensoriamento remoto?",
-    o:["O veículo que carrega o sensor: satélite, avião, drone ou balão",
-       "A faixa do terreno coberta em uma passagem",
-       "O programa usado para abrir as imagens",
-       "O tipo de radiação usado pelo sensor"],
-    c:0,
-    e:"Plataforma é onde o sensor 'está sentado': satélite, avião, drone ou balão. O satélite é a plataforma em órbita; o sensor fica a bordo e é a parte que realmente mede a radiação."
-  },
-  {
-    t:"Qual dessas situações é um exemplo de sensoriamento remoto?",
-    o:["Uma foto tirada pela câmera de um drone voando sobre o terreno",
-       "Um técnico que analisa uma amostra de água com o copo na mão",
-       "Um agrônomo medindo a profundidade do solo com uma régua",
-       "Um pedreiro conferindo a espessura de uma parede com trena"],
-    c:0,
-    e:"A câmera do drone é um sensor instalado numa plataforma, captando informação à distância. Nos outros exemplos há contato direto com o objeto — não é sensoriamento remoto."
-  },
-  {
-    t:"O que é um satélite artificial?",
-    o:["Um equipamento construído pelo homem que gira em volta da Terra levando sensores",
-       "Um avião que sobrevoa a área de estudo",
-       "Um radar instalado no solo",
-       "Um computador que armazena as imagens"],
-    c:0,
-    e:"O satélite artificial é uma plataforma colocada em órbita pela humanidade. Ele gira em volta da Terra e, nos casos de sensoriamento remoto, leva sensores a bordo."
-  },
-  {
-    t:"O que é o ALVO na linguagem de sensoriamento remoto?",
-    o:["O objeto ou área que queremos observar na superfície (água, vegetação, solo, cidade)",
-       "O computador que guarda as imagens",
-       "O satélite em órbita",
-       "A agência espacial que lança o satélite"],
-    c:0,
-    e:"Alvo é o que se quer 'enxergar': uma área de floresta, um rio, um solo, uma cidade, uma plantação. O sensor é apontado para o alvo e registra a radiação que chega dele."
-  },
-  {
-    t:"O satélite Landsat é famoso na história do sensoriamento remoto porque foi:",
-    o:["O primeiro satélite feito para mapear os recursos da superfície da Terra (1972)",
-       "O primeiro satélite que fotografou a Lua",
-       "O satélite que levou o primeiro rádio ao espaço",
-       "O primeiro satélite construído por um país europeu"],
-    c:0,
-    e:"O Landsat 1 (1972) inaugurou o sensoriamento remoto orbital dedicado aos recursos terrestres, e a série segue em operação até hoje (como o Landsat 8). Na aula, ele é um dos dois satélites principais, junto com o Sentinel-2 da ESA."
-  },
-  {
-    t:"O satélite SENTINEL-2, muito usado na aula, é mantido por qual organização?",
-    o:["A ESA — a agência espacial europeia",
-       "Uma empresa privada de telecomunicações",
-       "A agência espacial do Brasil",
-       "Uma universidade japonesa"],
-    c:0,
-    e:"O Sentinel-2 pertence ao programa Copernicus, da ESA (Agência Espacial Europeia). Suas imagens são gratuitas e ele é um dos dois satélites principais da aula, junto com o Landsat norte-americano."
-  },
-  {
-    t:"Qual é a principal diferença entre um sensor em AVIÃO e um sensor em SATÉLITE?",
-    o:["O avião imagea uma área menor com mais detalhe; o satélite cobre áreas enormes repetidamente",
-       "O avião voa mais alto que o satélite",
-       "O satélite toca o terreno e o avião não",
-       "Não há diferença: os dois capturam exatamente as mesmas cenas"],
-    c:0,
-    e:"Por voar mais perto do chão, o avião (ou drone) captura áreas menores com mais detalhe. O satélite, em órbita, cobre áreas muito grandes e repassa com frequência nas mesmas regiões."
-  },
-  {
-    t:"Qual dessas aplicações é típica de sensoriamento remoto?",
-    o:["Mapear o desmatamento na Amazônia usando imagens de satélite",
-       "Contar os ovos de um ninho de pássaros, olhando de perto",
-       "Provar a idade de uma rocha em laboratório",
-       "Medir a altura de uma parede com metro"],
-    c:0,
-    e:"O sensoriamento remoto é muito usado para monitorar a superfície da Terra: desmatamento, queimadas, crescimento de cidades, rios e agricultura — sempre olhando de longe, pelas imagens."
-  },
-  {
-    t:"O que o sensor registra dos objetos da superfície?",
-    o:["Como cada objeto reflete a radiação que recebe (seu comportamento espectral)",
-       "O cheiro e o som dos objetos",
-       "Apenas os nomes dos lugares",
-       "Somente a cor exata de cada ser vivo"],
-    c:0,
-    e:"O sensor mede propriedades espectrais: como o alvo reflete a radiação em cada trecho. Cada material tem um jeito próprio de refletir — é essa 'assinatura' que permite reconhecê-lo na imagem."
-  }]
-},
-{
-  num:2, titulo:"Reflexão, Absorção e Reflectância", emoji:"💡",
-  questoes:[
-  {
-    t:"O que é REFLECTÂNCIA?",
-    o:["A porção da luz que 'quica' de volta quando atinge uma superfície",
-       "A porção da luz que passa do outro lado do objeto",
-       "A porção da luz que permanece retida dentro do objeto",
-       "A luz que o sensor emite para iluminar o alvo"],
-    c:0,
-    e:"Quando a luz incide sobre um alvo, parte dela 'quica' de volta — essa fração refletida é a reflectância. É ela que o sensor detecta no modo óptico e que define o tom claro/escuro do objeto na imagem."
-  },
-  {
-    t:"O que significa ABSORÇÃO da radiação?",
-    o:["A luz atinge o objeto e fica retida por ele, sem voltar nem passar adiante",
-       "A luz atravessa o objeto e continua do outro lado",
-       "A luz bate no objeto e volta para o sensor",
-       "A luz é bloqueada pelo sensor antes de chegar ao alvo"],
-    c:0,
-    e:"Na interação da luz com o alvo há três destinos: reflexão (volta), transmissão (atravessa) e absorção (fica retida, geralmente aquecendo o objeto)."
-  },
-  {
-    t:"E o que é TRANSMISSÃO da radiação?",
-    o:["A luz atravessa o objeto e continua do outro lado",
-       "A luz bate no objeto e volta para o sensor",
-       "A luz fica retida pelo objeto, aquecendo-o",
-       "A luz muda de cor antes de atingir o alvo"],
-    c:0,
-    e:"Transmissão é a fração da luz que passa através do alvo, como a luz atravessando um copo de água. Tudo o que chega se divide entre a parte refletida, absorvida e transmitida."
-  },
-  {
-    t:"Um objeto muito CLARO, como a neve fresca ou o papel branco, é assim porque:",
-    o:["Reflete quase toda a luz que recebe (reflectância alta)",
-       "Absorve quase toda a luz que recebe",
-       "Deixa a luz passar para o outro lado",
-       "Emite uma luz própria muito forte"],
-    c:0,
-    e:"Superfícies claras têm reflectância alta: devolvem quase toda a luz. Superfícies escuras absorvem muito e refletem pouco — por isso parecem escuras na imagem."
-  },
-  {
-    t:"Por que a água costuma aparecer ESCURA nas imagens de satélite?",
-    o:["Porque ela absorve a maior parte da luz (baixa reflectância)",
-       "Porque reflete toda a luz que recebe",
-       "Porque transmite luz ao sensor em grande quantidade",
-       "Porque emite uma luz própria intensa"],
-    c:0,
-    e:"A água absorve grande parte da radiação e reflete pouco — por isso aparece escura na maior parte das bandas. Essa é uma das pistas para distinguir água de vegetação e solo nas imagens."
-  },
-  {
-    t:"Quando a luz do Sol atinge uma folha de vegetação saudável, o que ocorre em destaque?",
-    o:["A folha reflete muito a luz do infravermelho e absorve a luz do visível",
-       "A folha reflete muito a luz verde e absorve o vermelho e o infravermelho",
-       "A folha absorve a luz do infravermelho e reflete o vermelho",
-       "A folha transmite toda a luz de volta ao espaço"],
-    c:0,
-    e:"Vegetação saudável reflete intensamente o infravermelho próximo e absorve o visível (usa essa luz na fotossíntese). É essa diferença de comportamento que permite distinguir plantas nas imagens."
-  },
-  {
-    t:"Duas rochas que parecem IGUAIS aos olhos ('cinzas') podem ser distinguidas pelo satélite?",
-    o:["Sim — elas podem refletir quantidades diferentes em certas bandas",
-       "Não — se parecem iguais a olho nu, o satélite também não distingue",
-       "Só se o satélite voar bem baixo sobre elas",
-       "Somente pegando pedaços delas para pesar"],
-    c:0,
-    e:"Cada material tem seu comportamento espectral: mesmo parecendo iguais no dia a dia, materiais diferentes refletem quantidades distintas em certas bandas — o satélite enxerga essa diferença."
-  },
-  {
-    t:"Uma superfície ESCURA é escura porque:",
-    o:["Ela absorve mais a radiação e reflete menos",
-       "Ela reflete mais radiação que as claras",
-       "Ela emite luz própria forte",
-       "O sensor diminui o brilho só dela"],
-    c:0,
-    e:"Objetos escuros absorvem a maior parte da radiação (pouquíssima volta ao sensor) — asfalto, solo escuro e água são exemplos. O brilho na imagem vem da radiação que volta, não da que 'some' no objeto."
-  },
-  {
-    t:"Por que as PLANTAS saudáveis parecem verdes para o nosso olho?",
-    o:["Elas refletem a parte verde da luz e absorvem as outras cores",
-       "Elas emitem luz verde própria",
-       "A atmosfera pinta as plantas de verde",
-       "Elas transmitem a cor verde para o sensor"],
-    c:0,
-    e:"A luz do Sol tem todas as cores. As plantas absorvem mais o azul e o vermelho (para a fotossíntese) e refletem o verde — o verde refletido chega ao nosso olho. O reflexo alto no infravermelho o olho não vê, mas o sensor sim."
-  },
-  {
-    t:"Por que os objetos que estão na SOMBRA aparecem mais escuros na imagem?",
-    o:["Recebem menos luz para refletir — menos radiação chega deles ao sensor",
-       "Eles absorvem luz que nem existe",
-       "O sensor desliga nessas áreas",
-       "A sombra aquece o objeto e o apaga da cena"],
-    c:0,
-    e:"Se menos luz solar atinge o alvo (sombra), menos radiação é refletida — o pixel fica escuro. Por isso sombras de nuvem e de relevo aparecem como manchas escuras nas imagens."
-  },
-  {
-    t:"Água de rio com bastante BARRO (sedimento), em vez de água limpa, aparece na imagem:",
-    o:["Mais clara — o sedimento reflete a luz",
-       "Totalmente invisível",
-       "Com outra cor pintada pelo satélite",
-       "Cristalina, como vidro"],
-    c:0,
-    e:"Partículas de sedimento em suspensão refletem luz — por isso rios barrentos aparecem mais claros que a água limpa. O comportamento de reflexão muda o tom do alvo na imagem."
-  },
-  {
-    t:"Estrada de ASFALTO novo aparece escura e arena de rio clara. Isso acontece porque:",
-    o:["O asfalto reflete pouco e a arena reflete muito",
-       "O asfalto é mais frio que o resto do terreno",
-       "O satélite pinta o asfalto de escuro",
-       "A arena absorve mais que o asfalto"],
-    c:0,
-    e:"Diferença de reflectância: material claro (arena, areia) reflete muito; material escuro (asfalto) reflete quase nada. Essa diferença é o que permite distinguir os dois nas imagens."
-  }]
-},
-{
-  num:3, titulo:"Sensores Ativos × Passivos", emoji:"📡",
-  questoes:[
-  {
-    t:"O que é um sensor PASSIVO?",
-    o:["Um sensor que capta energia de uma fonte externa, como a luz do Sol",
-       "Um sensor que emite seu próprio sinal e mede o retorno",
-       "Um sensor que não registra nada, apenas encaminha dados",
-       "Um sensor desligado, guardado no armário"],
-    c:0,
-    e:"Sensor passivo não produz energia: só 'escuta' e registra a energia vinda de fora — na maioria das vezes a luz refletida do Sol (câmeras, satélites ópticos como Landsat)."
-  },
-  {
-    t:"O que é um sensor ATIVO?",
-    o:["Um sensor que emite a sua própria energia e depois mede o sinal que volta",
-       "Um sensor que funciona apenas com a luz do Sol",
-       "Um sensor que depende de uma fonte externa para ver",
-       "Um sensor usado somente para observação terrestre de dia"],
-    c:0,
-    e:"O sensor ativo gera a sua própria energia (um sinal) e mede a resposta do alvo — o exemplo clássico é o radar. Por isso ele funciona de dia e de noite."
-  },
-  {
-    t:"O radar é um exemplo de sensor:",
-    o:["Ativo — ele emite o pulso e capta o eco de volta",
-       "Passivo — ele capta a luz refletida do Sol",
-       "Passivo — ele depende do calor do terreno",
-       "Nenhum — radar não é utilizado em sensoriamento remoto"],
-    c:0,
-    e:"O radar emite um pulso de micro-ondas, o pulso toca o alvo e o eco volta. O radar é o sensor ativo mais famoso, usado inclusive quando o céu está nublado."
-  },
-  {
-    t:"Qual sensor consegue captar imagens à noite?",
-    o:["O ativo — como ele produz a própria energia, não depende da luz solar",
-       "O passivo óptico — a lente sempre compensa a falta de luz",
-       "Nenhum tipo de sensor funciona à noite",
-       "Somente sensores instalados no solo"],
-    c:0,
-    e:"Sensores passivos dependem de fonte externa (Sol) — à noite, sem sol, a imagem óptica não se forma. O ativo, como o radar, leva a sua 'lanterna' própria e funciona 24 horas."
-  },
-  {
-    t:"Qual a vantagem do radar em dias NUBLADOS?",
-    o:["Ele atravessa nuvens, pois seu sinal passa por elas",
-       "Ele também é bloqueado, como a luz solar",
-       "Ele desliga automaticamente e reativa quando o céu limpa",
-       "Ele enxerga as nuvens ao invés do terreno"],
-    c:0,
-    e:"As micro-ondas do radar atravessam nuvens e chuva: por isso o radar consegue imagear o terreno mesmo em região nublada — situação em que o sensor óptico falha."
-  },
-  {
-    t:"Qual dessas situações é um problema para uma imagem de satélite óptico passivo?",
-    o:["Muitas nuvens sobre a área — elas escondem o terreno",
-       "O satélite passar no mesmo local mais de uma vez",
-       "O terreno refletir a luz do Sol",
-       "O sensor captar a luz em forma de números"],
-    c:0,
-    e:"O sensor óptico passivo enxerga a luz refletida do Sol. Nuvens bloqueiam essa luz e aparecem na imagem em vez do terreno — problema clássico para mapeamento em áreas de céu nublado."
-  },
-  {
-    t:"A câmera fotográfica comum (do celular, por exemplo) é um sensor:",
-    o:["Passivo — ela registra a luz que bate no objeto (do Sol ou de uma lâmpada)",
-       "Ativo — a câmera emite a própria luz de que precisa",
-       "Neutro — não é um sensor de nenhum tipo",
-       "Térmico — a câmera mede a temperatura dos objetos"],
-    c:0,
-    e:"A câmera comum é passiva: registra a luz que vem de fora. Sem iluminação (Sol ou lâmpada), a foto sai escura — igual ao sensor óptico passivo do satélite."
-  },
-  {
-    t:"Que comparação explica bem o sensor ativo?",
-    o:["O radar como uma 'lanterna' — ele leva luz própria e 'ilumina' o terreno, mesmo no escuro",
-       "O radar como um espelho — só funciona de dia",
-       "O radar como um rádio de pilha — capta som dos objetos",
-       "O radar como um balão — flutua até o alvo"],
-    c:0,
-    e:"Como a lanterna, o radar emite energia própria e recebe a resposta do alvo: funciona no escuro, sob nuvem e de noite — exatamente como alguém vê com uma lanterna à noite."
-  },
-  {
-    t:"Superfície LISA (como um lago calmo) e superfície RUGOSA (como matagal) aparecem na imagem de radar como:",
-    o:["A lisa devolve pouco sinal (escura); a rugosa devolve muito (clara)",
-       "A lisa aparece clara e a rugosa escura",
-       "As duas aparecem sempre iguais",
-       "Nenhuma aparece: radar não vê superfícies"],
-    c:0,
-    e:"Superfície lisa espelha o sinal do radar para longe (retorno fraco = escura, como água calma). Superfície rugosa espalha o sinal em várias direções e devolve muito = clara."
-  },
-  {
-    t:"Qual sensor é indicado para mapear a Amazônia, região com muito céu nublado o ano todo?",
-    o:["Radar — seu sinal atravessa nuvens e alcança o terreno",
-       "Câmera óptica passiva — nuvens não atrapalham",
-       "Somente sensores instalados nas copas das árvores",
-       "Nenhum sensor funciona lá"],
-    c:0,
-    e:"Em regiões quase sempre nubladas, o radar é a escolha: por atravessar as nuvens, ele enxerga o terreno quando a imagem óptica não consegue. Dados de radar são muito usados na Amazônia."
-  },
-  {
-    t:"Um sensor que mede o CALOR emitido pelo terreno (imagem termal) é usado para:",
-    o:["Detectar incêndios, vulcões e diferenças de temperatura do solo",
-       "Fotografar nuvens ao redor do satélite",
-       "Medir a distância exata até outro planeta",
-       "Contar quantos carros passam na estrada"],
-    c:0,
-    e:"Toda superfície com calor emite radiação. O sensor termal captura essa emissão e é muito usado para ver incêndios, vulcões ativos e diferenças de temperatura na superfície."
-  },
-  {
-    t:"Por que é útil ter satélites com vários sensores (óptico, radar, termal)?",
-    o:["Cada sensor enxerga uma informação diferente — juntando, a análise fica mais completa",
-       "Para o satélite ficar mais pesado",
-       "Porque se um quebrar, nenhum funciona",
-       "Não é útil: um sensor basta sempre"],
-    c:0,
-    e:"Cada tipo de sensor capta informação diferente: o óptico vê as cores da superfície, o radar atravessa nuvens e enxerga a forma, o termal vê o calor. Juntos, revelam mais do que cada um sozinho."
-  },
-  {
-    t:"Entre os satélites vistos em aula, qual é o de RADAR (sensor ativo)?",
-    o:["Sentinel-1 — o satélite radar da ESA",
-       "Sentinel-2 — que tira as imagens coloridas ópticas",
-       "Landsat 8 — o satélite da NASA",
-       "Nenhum deles tem sensor ativo"],
-    c:0,
-    e:"O Sentinel-1 é o satélite de radar da família Sentinel (ESA): sensor ativo, emite o próprio sinal e atravessa nuvens. Já o Sentinel-2 e os Landsat levam sensores ópticos passivos, que dependem da luz do Sol."
-  }]
-},
-{
-  num:4, titulo:"Resolução das Imagens", emoji:"🔍",
-  questoes:[
-  {
-    t:"O que é um PIXEL?",
-    o:["O menor pedacinho da imagem, como um azulejo de um mosaico",
-       "O nome dado ao satélite que capturou a cena",
-       "O programa que abre a imagem no computador",
-       "A altura em que o satélite orbita a Terra"],
-    c:0,
-    e:"Pixel é cada quadradinho da imagem — a menor parte com um único tom. Juntando todos os pixels, forma-se a imagem completa, como um mosaico de azulejos."
-  },
-  {
-    t:"O que significa RESOLUÇÃO ESPACIAL?",
-    o:["O tamanho que cada pixel representa na superfície (o menor objeto que se enxerga)",
-       "A frequência com que o satélite repassa sobre a mesma área",
-       "A quantidade de cores diferentes que a imagem registra",
-       "A altura em que o satélite orbita a Terra"],
-    c:0,
-    e:"Resolução espacial indica quanto terreno cada pixel cobre, ou seja, o tamanho do menor detalhe que se consegue enxergar na imagem. Pixel pequeno = mais detalhes."
-  },
-  {
-    t:"Qual dessas imagens permitirá enxergar MAIS detalhes do terreno?",
-    o:["A com resolução espacial de 2 m por pixel",
-       "A com resolução espacial de 30 m por pixel",
-       "A que tem mais cores no mapa de cores escolhido",
-       "A captada com o satélite mais antigo"],
-    c:0,
-    e:"Quanto menor o tamanho do pixel (2 m), maior o detalhamento: cada quadradinho cobre menos terreno. Um pixel de 30 m só mostra objetos bem maiores que isso."
-  },
-  {
-    t:"O que significa RESOLUÇÃO TEMPORAL?",
-    o:["O intervalo de tempo entre uma passagem e outra do satélite na mesma área",
-       "O tempo que o satélite demora para completar uma órbita, em minutos",
-       "Quantos anos a imagem leva para 'envelhecer'",
-       "O tempo que o computador demora para abrir a imagem"],
-    c:0,
-    e:"Resolução temporal é o tempo de revisita: de quanto em quanto tempo o satélite volta a passar sobre o mesmo lugar. Isso importa para monitorar fenômenos que mudam com o tempo."
-  },
-  {
-    t:"Para acompanhar uma plantação que muda semana a semana, o mais importante é ter:",
-    o:["Boa resolução temporal — o satélite deve passar com frequência",
-       "O maior satélite do mundo",
-       "Uma imagem muito antiga, para comparar épocas",
-       "Apenas uma imagem, captada uma única vez"],
-    c:0,
-    e:"Para monitorar mudanças é preciso o satélite revisitar a área com frequência — boa resolução temporal. Uma única imagem não mostra a evolução da plantação."
-  },
-  {
-    t:"O que são BANDAS espectrais do sensor?",
-    o:["Diferentes 'trechos' da radiação que o sensor registra separadamente",
-       "As linhas horizontais de pixels da imagem",
-       "A quantidade de computadores que processam a imagem",
-       "O local onde o satélite lança os dados na Terra"],
-    c:0,
-    e:"O sensor separa a radiação em trechos (bandas): azul, verde, vermelho, infravermelho etc. Cada banda guarda uma imagem própria — e a combinação delas revela informações diferentes sobre o alvo."
-  },
-  {
-    t:"Qual termo significa quantos TONS DE CINZA o sensor consegue distinguir?",
-    o:["A quantidade de tons de brilho diferentes que cada pixel pode ter",
-       "O número de pixels de uma imagem",
-       "A frequência com que o satélite revisita a área",
-       "O tamanho do terreno coberto por cada pixel"],
-    c:0,
-    e:"Essa é a resolução radiométrica: a finura do 'degrau' de tons. Menos tonalidades = imagem mais 'dura', difícil de ver pequenas diferenças; mais tonalidades = mais sutileza de brilho."
-  },
-  {
-    t:"Qual dessas resoluções espaciais é a MAIS detalhada (pixel menor)?",
-    o:["2 m","10 m","30 m","55 m"],
-    c:0,
-    e:"Ordenando da mais detalhada para a mais geral: 2 m > 10 m > 30 m > 55 m. O 2 m cobre menos terreno por pixel, então enxerga objetos e estruturas menores."
-  },
-  {
-    t:"Para mapear RUAS estreitas de uma cidade, o sensor precisa sobretudo de:",
-    o:["Pixel pequeno — alta resolução espacial",
-       "Imagens todas iguais, sem variação",
-       "Passagens muito espaçadas, de meses em meses",
-       "Uma única banda em cinza"],
-    c:0,
-    e:"Ruas estreitas são feições pequenas: para distingui-las, o pixel precisa cobrir menos terreno — alta resolução espacial. Pixel de 55 m juntaria ruas com casas e quarteirões numa mancha só."
-  },
-  {
-    t:"Uma imagem que registra muitas BANDAS ESTREITAS e contínuas do espectro é chamada de:",
-    o:["Hiperspectral — centenas de bandas bem separadas em trechos mínimos",
-       "Pancromática — única banda em preto e branco",
-       "Stereográfica — imagem achatada no chão",
-       "Termográfica — imagem do calor do terreno"],
-    c:0,
-    e:"Sensores multiespectrais têm poucas bandas de grande largura; os hiperespectrais têm centenas de bandas estreitas e encostadas — o material pode ser identificado quase como em laboratório."
-  },
-  {
-    t:"Pancromática é o nome dado para uma imagem:",
-    o:["Em preto e branco, de uma única banda e geralmente bem detalhada",
-       "Com todos os tipos de sensor juntos no arquivo",
-       "Tirada somente à noite, pelo radar",
-       "Feita apenas para mapas geológicos"],
-    c:0,
-    e:"Imagem pancromática registra uma banda ampla em escala de cinza, normalmente com pixel pequeno e detalhado. Comum em imagens de referência e melhorias de resolução (fusão)."
-  },
-  {
-    t:"Qual combinação resolve o desafio de detectar DESMATAMENTO em área remota e nublada?",
-    o:["Radar (ativa) para atravessar nuvens + boa resolução temporal para acompanhar mudanças",
-       "Somente imagem óptica do dia nublado, uma vez só",
-       "Uma única imagem antiga, em preto e branco",
-       "Foto de satélite com pixel de 60 m, de vários meses atrás"],
-    c:0,
-    e:"Área nublada: o radar vence (sua energia atravessa as nuvens). Mudança acompanhada no tempo: precisa revisita frequente (resolução temporal). Juntas, a dupla resolve o desafio."
-  },
-  {
-    t:"Entre Landsat 8 e Sentinel-2, qual revisita a mesma área com mais frequência?",
-    o:["Sentinel-2 — volta ao mesmo lugar em cerca de 5 dias (dois satélites juntos)",
-       "Landsat 8 — passa no mesmo lugar todos os dias",
-       "Os dois passam apenas uma vez por ano",
-       "Nenhum repassa: cada local é fotografado uma única vez"],
-    c:0,
-    e:"Sentinel-2 tem dois satélites (A e B) trabalhando juntos e revisita uma área em cerca de 5 dias; o Landsat 8 revisita em pouco mais de 15 dias. Revisitas frequentes ajudam a acompanhar mudanças na superfície."
-  }]
-},
-{
-  num:5, titulo:"Imagem Digital no Computador", emoji:"💾",
-  questoes:[
-  {
-    t:"No computador, uma imagem de satélite é entendida como:",
-    o:["Um conjunto de números organizados em linhas e colunas",
-       "Uma foto impressa em papel e digitalizada depois",
-       "Um desenho feito à mão e escaneado",
-       "Um vídeo, como um filme gravado em órbita"],
-    c:0,
-    e:"Para o computador a imagem é uma matriz: números (níveis de brilho) organizados em linhas e colunas. Cada número corresponde a um pixel da cena."
-  },
-  {
-    t:"O que é o NÍVEL DIGITAL (ND) de um pixel?",
-    o:["O número que indica o quão claro/escuro aquele pixel é",
-       "O nome do satélite que passou naquela data",
-       "A nota que o aluno tirou na questão",
-       "A data em que o satélite passou sobre o local"],
-    c:0,
-    e:"Nível digital é o número que representa o brilho do pixel: valores baixos = mais escuro; valores altos = mais claro. É por meio desses números que o computador 'vê' a cena."
-  },
-  {
-    t:"Como se forma uma imagem COLORIDA a partir de um satélite?",
-    o:["Combinando imagens de bandas diferentes (ex.: vermelho, verde e azul)",
-       "Colorindo o terreno no papel com lápis de cor",
-       "Pintando cada pixel com a cor da planta do terreno",
-       "O satélite sempre fotografa com câmera comum, colorida de origem"],
-    c:0,
-    e:"O sensor registra cada banda separada em preto e branco. Para gerar cor, as bandas são combinadas — se usar vermelho, verde e azul, forma-se a imagem colorida (a chamada composição colorida)."
-  },
-  {
-    t:"Para que serve o PROCESSAMENTO DIGITAL de imagens?",
-    o:["Transformar os números da imagem para facilitar a leitura de informações",
-       "Substituir a interpretação humana das imagens",
-       "Trocar o satélite que capturou a cena",
-       "Aumentar o tamanho do satélite em órbita"],
-    c:0,
-    e:"Processamento digital é manipular os números (níveis) da imagem: realçar contraste, corrigir distâncias, combinar bandas etc. O objetivo é tornar mais visível a informação de interesse — para o analista ler."
-  },
-  {
-    t:"Ao comprimir (diminuir) o arquivo de uma imagem em certos formatos, o que pode acontecer?",
-    o:["Perder detalhes e precisão — alguns formatos jogam partes da informação fora",
-       "Aumentar a qualidade da imagem em todos os casos",
-       "Nada — comprimir sempre mantém tudo intacto",
-       "O satélite captura a imagem novamente"],
-    c:0,
-    e:"Alguns formatos de compressão (como o JPEG) descartam informações para deixar o arquivo menor — perda definitiva de dados. Para imagens de sensoriamento remoto, o ideal é usar formatos que guardam tudo intacto (ex.: GeoTIFF)."
-  },
-  {
-    t:"Por que o satélite envia os dados como NÚMEROS e não como uma foto pronta?",
-    o:["Porque os números podem ser processados, combinados e comparados pelo computador",
-       "Porque foto colorida não funciona em satélites",
-       "Porque números são maiores que imagens",
-       "Porque é apenas tradição, sem uma explicação técnica"],
-    c:0,
-    e:"Enviar níveis digitais (números) permite processar depois: realçar, combinar bandas, comparar com imagens de outras datas e calcular estatísticas. A imagem é gerada a partir dos números, quando a gente quiser."
-  },
-  {
-    t:"O que é uma CENA de satélite?",
-    o:["O quadro completo da imagem capturada numa passagem do satélite",
-       "O caminho por onde o satélite orbita a Terra",
-       "A antena que recebe os dados na Terra",
-       "O computador que exibe a imagem no mapa"],
-    c:0,
-    e:"Cena é o quadro completo que o satélite captura numa passagem — como uma 'fotografia' grande retangular. Uma cena cobre uma área grande da superfície, com muitas linhas e colunas de pixels."
-  },
-  {
-    t:"O que é uma SÉRIE TEMPORAL de imagens?",
-    o:["Várias imagens da mesma área em datas diferentes, que mostram a mudança no tempo",
-       "Uma única imagem muito detalhada",
-       "Um conjunto de imagens de lugares totalmente diferentes",
-       "Uma imagem que viaja pelo espaço há muito tempo"],
-    c:0,
-    e:"Série temporal é a sequência de imagens da mesma área ao longo do tempo. É com ela que se acompanha o crescimento de cidade, desmatamento, plantação, enchentes e outros fenômenos."
-  },
-  {
-    t:"REALCE DE CONTRASTE na imagem serve para:",
-    o:["Ajudar a distinguir alvos parecidos, esticando os tons da imagem",
-       "Apagar detalhes indesejados da imagem",
-       "Aumentar o tamanho do arquivo, sem motivo",
-       "Esconder as nuvens do céu"],
-    c:0,
-    e:"Realçar o contraste é espalhar melhor os tons da imagem (escuros mais escuros, claros mais claros). Isso deixa mais fácil ver a diferença entre alvos parecidos."
-  },
-  {
-    t:"Na 'falsa cor', as bandas são mostradas com cores diferentes das reais para:",
-    o:["Fazer certos alvos se destacarem (ex.: vegetação saudável aparece vermelha/rosa)",
-       "Pintar o terreno da cor que o satélite quiser",
-       "Fazer a imagem ficar idêntica ao que o olho vê",
-       "Trocar o nome dos lugares da cena"],
-    c:0,
-    e:"Na falsa cor, cada banda recebe uma cor. Assim, alvos que se confundem na cor verdadeira ficam visíveis — técnica muito usada para monitorar vegetação."
-  },
-  {
-    t:"O que significam os formatos SEM PERDA (ex.: PNG, GeoTIFF) para imagens de estudo?",
-    o:["Guardam toda a informação intacta — nada é jogado fora na compressão",
-       "Apagam todas as informações de cor",
-       "Deixam a imagem menor em todos os casos, sem exceção",
-       "Só funcionam quando há nuvem na cena"],
-    c:0,
-    e:"Formatos sem perda comprimem (diminuem o arquivo) sem descartar dados — o valor de cada pixel permanece igual ao original. Por isso são preferidos em dados científicos."
-  }]
-},
-{
-  num:6, titulo:"Nuvens e Atmosfera nas Imagens", emoji:"☁️",
-  questoes:[
-  {
-    t:"A atmosfera interfere na radiação que vai do Sol ao sensor?",
-    o:["Sim — ela absorve e espalha parte da luz ao longo do caminho",
-       "Não — a luz viaja sem sofrer nenhuma alteração até o sensor",
-       "Não — ela apenas aumenta o brilho das imagens",
-       "Somente quando estão presentes satélites meteorológicos"],
-    c:0,
-    e:"No trajeto Sol → superfície → sensor, a atmosfera (gases, vapor d'água, aerossóis) absorve e espalha parte da energia. Por isso a luz registrada pelo sensor não é exatamente a mesma que saiu do alvo."
-  },
-  {
-    t:"O que uma NUVEM faz com a imagem de satélite óptico?",
-    o:["Bloqueia a luz e aparece na cena em vez do terreno",
-       "Aumenta o detalhamento dos pixels embaixo dela",
-       "Melhora o contraste dos objetos do solo",
-       "Não interfere em nada na imagem"],
-    c:0,
-    e:"A nuvem bloqueia a luz solar e ocupa o lugar do terreno na imagem — impossibilita enxergar o que está por baixo. Por isso, antes de usar uma imagem, o analista confere se o céu estava limpo."
-  },
-  {
-    t:"O que é CORREÇÃO ATMOSFÉRICA de uma imagem?",
-    o:["Remover o efeito da atmosfera, para comparar imagens de dias diferentes",
-       "Aumentar o zoom para enxergar objetos pequenos",
-       "Tornar a imagem com mais cores vivas",
-       "Deixar a imagem menor, para caber no computador"],
-    c:0,
-    e:"Correção atmosférica é aplicar ajustes que aproximam a imagem do que realmente ocorre na superfície, retirando o 'efeito' da atmosfera. Assim, comparações entre imagens de datas ou satélites diferentes ficam justas."
-  },
-  {
-    t:"O que é uma JANELA ATMOSFÉRICA?",
-    o:["Uma faixa da radiação que atravessa a atmosfera com pouca perda",
-       "Uma porta aberta no satélite para fotografar",
-       "O espaço entre duas passagens do satélite",
-       "A parte da imagem recortada para análise"],
-    c:0,
-    e:"Há trechos do espectro em que a atmosfera deixa a radiação passar bem (e outros em que ela absorve). Os bons trechos são as 'janelas' — os sensores são desenhados para usá-las."
-  },
-  {
-    t:"Para uma imagem de satélite óptico, qual é o melhor dia de captura?",
-    o:["Um dia limpo, sem nuvens sobre a área de estudo",
-       "Um dia de chuva forte, para ver melhor o solo molhado",
-       "Um dia muito nublado, para o radar ter mais luz",
-       "Qualquer dia — a atmosfera não faz nenhuma diferença"],
-    c:0,
-    e:"Sem nuvens, a luz do Sol chega bem ao terreno e volta bem ao sensor. Com nuvens, elas bloqueiam o caminho e preenchem a imagem com 'brancos' — por isso se prefere dias limpos."
-  },
-  {
-    t:"Por que comparar imagens de mesma área em datas diferentes exige atenção à atmosfera?",
-    o:["Porque a atmosfera muda de um dia para outro e pode 'mexer' nos valores da imagem",
-       "Porque o terreno também deve mudar sempre",
-       "Porque o satélite nunca passa duas vezes no mesmo lugar",
-       "Porque as imagens antigas não têm cores"],
-    c:0,
-    e:"Cada dia tem uma atmosfera diferente (mais ou menos vapor, aerossóis, nuvens), o que altera os brilhos registrados. Ignorar isso pode levar a conclusões erradas — o efeito atmosférico se confunde com diferença real do terreno."
-  },
-  {
-    t:"O que é ESPALHAMENTO da radiação na atmosfera?",
-    o:["A luz se desvia em várias direções ao encontrar partículas (gases, poeira, gotas)",
-       "A luz ganha velocidade na atmosfera",
-       "A luz desaparece por completo no céu",
-       "A luz esquenta o sensor antes de chegar ao alvo"],
-    c:0,
-    e:"Partículas e gases da atmosfera desviam a luz em várias direções — é o espalhamento. Parte dessa luz 'sai do caminho' e diminui o contraste da cena (imagem mais leitosa)."
-  },
-  {
-    t:"Por que o CÉU parece AZUL para nós?",
-    o:["As moléculas do ar espalham mais a luz azul para todos os lados",
-       "O oceano pinta o céu ao refletir a água",
-       "O Sol é azul, mas parece laranja ao entardecer",
-       "O espalhamento remove o vermelho e o azul fica pintado na retina"],
-    c:0,
-    e:"As moléculas de gás espalham a luz azul mais forte que as outras cores — esse azul espalhado enche o céu todo. É o espalhamento Rayleigh, o mesmo que interfere nas imagens de satélite."
-  },
-  {
-    t:"Por que NUVENS aparecem BRANCAS nas imagens?",
-    o:["Suas gotículas são grandes e espalham todas as cores igualmente",
-       "Elas absorvem todas as cores, menos o branco",
-       "O satélite pinta nuvens de branco por convenção",
-       "Emittem luz própria branca"],
-    c:0,
-    e:"O espalhamento não seletivo acontece quando a partícula é grande (gotícula de nuvem): todas as cores são desviadas com a mesma força — a soma delas parece branco. É por isso que as nuvens também parecem brancas para o olho."
-  },
-  {
-    t:"Fumaça de QUEIMADA no dia da captura deixa a imagem da área:",
-    o:["Mais leitosa e com menos contraste entre os objetos",
-       "Com mais contraste entre os alvos",
-       "Inalterada, pois fumaça não interfere",
-       "Com o terreno totalmente visível e nítido"],
-    c:0,
-    e:"A fumaça (aerossóis) espalha a luz e soma um 'véu' na cena: os brilhos sobem e a diferença entre os alvos diminui — tudo fica menos contrastado. Isso precisa ser levado em conta ou corrigido."
-  },
-  {
-    t:"Em imagens já CORRIGIDAS (Surface Reflectance), o que já foi feito:",
-    o:["O efeito da atmosfera já foi retirado — a imagem mostra melhor a superfície",
-       "Todas as nuvens foram retiradas e substituídas por outro lugar",
-       "A imagem foi pintada com as cores reais",
-       "Nada — a imagem está idêntica à bruta"],
-    c:0,
-    e:"Produtos corrigidos (SR) já saíram do efeito da atmosfera: os brilhos representam melhor a superfície real. Para comparações justas entre datas, prefira essas imagens."
-  },
-  {
-    t:"Qual é o caminho da radiação numa imagem óptica comum de satélite?",
-    o:["Sol → superfície → sensor (o satélite captura a luz refletida que o Sol trouxe)",
-       "Sensor → sol → superfície → satélite",
-       "Superfície → atmosfera → estrela vizinha",
-       "Nuvem → satélite → Terra → Sol"],
-    c:0,
-    e:"O fluxo típico do sensor óptico passivo: a luz sai do Sol, bate na superfície, reflete e vai até o sensor no satélite — e no caminho de ida e de volta atravessa a atmosfera, que interfere."
-  }]
-}
-];
+const DATA = {"aulas": [{"num": 1, "titulo": "Princípios de Sensoriamento Remoto", "emoji": "🌍"}, {"num": 2, "titulo": "Interação da Radiação Eletromagnética com os Alvos", "emoji": "💡"}, {"num": 3, "titulo": "Sistemas Sensores Imageadores", "emoji": "📡"}, {"num": 4, "titulo": "Resoluções de Imagens", "emoji": "🔍"}, {"num": 5, "titulo": "Modelos de Dados e de Processamento", "emoji": "💾"}, {"num": 6, "titulo": "Correção Atmosférica, Nuvens e Sombras", "emoji": "☁️"}], "questoes": [{"id": 1, "aula": 1, "t": "O que caracteriza o sensoriamento remoto?", "o": ["A medição de propriedades da superfície sem contato físico direto com o alvo.", "A coleta de amostras somente em laboratório.", "A observação da superfície exclusivamente por fotografias aéreas.", "A medição de qualquer fenômeno apenas com sensores instalados no solo."], "e": "O sensoriamento remoto obtém informações sobre alvos à distância, utilizando a energia eletromagnética registrada por sensores.", "c": 0}, {"id": 2, "aula": 1, "t": "No sensoriamento remoto, qual elemento funciona como meio de comunicação entre o alvo e o sensor?", "o": ["A radiação eletromagnética.", "O sistema de coordenadas.", "A legenda do mapa.", "O tamanho do arquivo."], "e": "A informação chega ao sensor por meio da radiação eletromagnética refletida, emitida ou retroespalhada.", "c": 0}, {"id": 3, "aula": 1, "t": "Por que o termo “remoto” é utilizado em sensoriamento remoto?", "o": ["Porque o sensor não precisa estar em contato físico direto com o alvo.", "Porque todas as imagens são obtidas fora da atmosfera.", "Porque os dados só podem ser analisados muitos dias depois.", "Porque os sensores sempre ficam em satélites."], "e": "O termo indica que a informação é obtida à distância, sem contato físico direto com o objeto observado.", "c": 0}, {"id": 4, "aula": 1, "t": "Nos sensores ópticos passivos, qual é a principal fonte de energia utilizada para observar a superfície durante o dia?", "o": ["O Sol.", "O próprio sensor.", "O campo magnético da Terra.", "A rede elétrica da estação terrestre."], "e": "Nos sensores ópticos passivos, a energia solar ilumina a superfície e a parcela refletida pode ser registrada pelo sensor.", "c": 0}, {"id": 5, "aula": 1, "t": "Na região do infravermelho termal, o sensor registra principalmente:", "o": ["A energia emitida pelos próprios alvos terrestres.", "Somente a luz azul refletida pela superfície.", "A energia produzida artificialmente pelo satélite.", "A posição geográfica dos pixels."], "e": "No termal, a própria Terra e os objetos da superfície atuam como fontes de radiação.", "c": 0}, {"id": 6, "aula": 1, "t": "A faixa do visível é especialmente importante porque:", "o": ["Está relacionada às cores observadas e à interação da luz com pigmentos, solos, rochas e outros materiais.", "É completamente livre de interferência atmosférica.", "É a única faixa utilizada por todos os sensores.", "É formada apenas por micro-ondas."], "e": "A região visível está ligada às cores percebidas e a importantes interações com materiais da superfície.", "c": 0}, {"id": 7, "aula": 1, "t": "Qual faixa espectral é particularmente importante para observar diferenças relacionadas à vegetação verde?", "o": ["Infravermelho próximo (NIR).", "Raios X.", "Ondas de rádio de telecomunicação.", "Ultravioleta extremo."], "e": "A vegetação apresenta comportamento muito característico no NIR, o que ajuda a diferenciá-la de diversos outros alvos.", "c": 0}, {"id": 8, "aula": 1, "t": "O infravermelho de ondas curtas (SWIR) é útil, entre outras aplicações, porque responde a:", "o": ["Variações relacionadas à água e a características de minerais e materiais.", "Somente à posição orbital do satélite.", "Apenas à cor visível dos alvos.", "Somente à forma geométrica dos polígonos."], "e": "O SWIR possui regiões importantes para observar absorções associadas à água e a diferentes materiais.", "c": 0}, {"id": 9, "aula": 1, "t": "O que são janelas atmosféricas?", "o": ["Faixas do espectro em que a atmosfera permite maior passagem da radiação.", "Áreas da imagem sem pixels.", "Intervalos de tempo em que o satélite fica desligado.", "Regiões do mapa que não possuem coordenadas."], "e": "As janelas atmosféricas são faixas em que a radiação consegue atravessar a atmosfera com menor atenuação.", "c": 0}, {"id": 10, "aula": 1, "t": "Qual foi a importância do programa Landsat para o sensoriamento remoto?", "o": ["Permitiu o monitoramento orbital sistemático e repetitivo da superfície terrestre.", "Substituiu completamente todos os levantamentos de campo.", "Foi criado apenas para observar oceanos.", "Utiliza exclusivamente sensores ativos de radar."], "e": "O Landsat consolidou a observação sistemática e repetitiva dos recursos terrestres por satélite.", "c": 0}, {"id": 11, "aula": 1, "t": "Em termos gerais, quando o comprimento de onda diminui, a energia associada à radiação:", "o": ["Aumenta.", "Desaparece.", "Permanece sempre igual.", "Passa a depender apenas do tamanho do pixel."], "e": "Comprimentos de onda menores estão associados a radiações de maior energia.", "c": 0}, {"id": 12, "aula": 1, "t": "Por que sinais de radar conseguem atravessar muitas coberturas de nuvens melhor do que a luz visível?", "o": ["Porque seus comprimentos de onda são muito maiores e sofrem menos espalhamento pelas gotículas das nuvens.", "Porque o radar elimina fisicamente as nuvens.", "Porque as nuvens não possuem água.", "Porque o radar sempre opera abaixo das nuvens."], "e": "As micro-ondas interagem de maneira diferente com as partículas atmosféricas e conseguem atravessar muitas condições de nebulosidade.", "c": 0}, {"id": 13, "aula": 2, "t": "Quando a radiação atinge um alvo, quais são os três destinos principais estudados na aula?", "o": ["Reflexão, transmissão e absorção.", "Classificação, vetorização e exportação.", "Brilho, contraste e escala.", "Órbita, altitude e velocidade."], "e": "A energia incidente pode ser refletida, transmitida ou absorvida pelo material.", "c": 0}, {"id": 14, "aula": 2, "t": "Qual processo corresponde à parcela da energia que retorna a partir da superfície do alvo?", "o": ["Reflexão.", "Transmissão.", "Absorção.", "Quantização."], "e": "A reflexão representa a parcela da radiação que é devolvida pelo alvo.", "c": 0}, {"id": 15, "aula": 2, "t": "Qual processo ocorre quando parte da energia incidente é retida pelo material?", "o": ["Absorção.", "Reflexão.", "Transmissão.", "Reamostragem."], "e": "Na absorção, a energia é incorporada pelo material em vez de ser refletida ou transmitida.", "c": 0}, {"id": 16, "aula": 2, "t": "Qual processo descreve a energia que atravessa um material?", "o": ["Transmissão.", "Absorção.", "Reflexão.", "Classificação."], "e": "A transmitância está associada à parcela da radiação que atravessa o material.", "c": 0}, {"id": 17, "aula": 2, "t": "A interação macroscópica está principalmente relacionada a:", "o": ["Forma, textura, rugosidade e geometria do alvo.", "Trocas de energia em níveis atômicos e moleculares.", "Somente ao nome da banda.", "Apenas ao formato do arquivo digital."], "e": "A interação macroscópica está ligada às características físicas e geométricas observáveis do alvo.", "c": 0}, {"id": 18, "aula": 2, "t": "A interação microscópica está relacionada principalmente a:", "o": ["Trocas de energia em nível atômico e molecular.", "Apenas ao tamanho do arquivo.", "Somente à posição do pixel na matriz.", "Exclusivamente à altitude do satélite."], "e": "A interação microscópica ajuda a explicar absorções específicas associadas à composição dos materiais.", "c": 0}, {"id": 19, "aula": 2, "t": "Uma superfície muito lisa tende a apresentar qual comportamento?", "o": ["Reflexão mais especular.", "Reflexão totalmente aleatória em todas as situações.", "Ausência completa de reflexão.", "Apenas transmissão."], "e": "Superfícies lisas tendem a direcionar a reflexão de forma mais organizada, semelhante a um espelho.", "c": 0}, {"id": 20, "aula": 2, "t": "Uma superfície rugosa tende a favorecer:", "o": ["Reflexão mais difusa.", "Somente reflexão especular.", "Ausência de interação com a radiação.", "Somente emissão termal."], "e": "A rugosidade favorece o espalhamento da energia refletida em diferentes direções.", "c": 0}, {"id": 21, "aula": 2, "t": "O que representa o comportamento espectral de um alvo?", "o": ["A forma como sua resposta varia ao longo de diferentes comprimentos de onda.", "Apenas sua posição geográfica.", "Somente seu tamanho em metros.", "A ordem em que os arquivos foram salvos."], "e": "O comportamento espectral mostra como um material responde em diferentes regiões do espectro.", "c": 0}, {"id": 22, "aula": 2, "t": "Por que a vegetação verde costuma apresentar forte contraste entre o vermelho e o NIR?", "o": ["Porque absorve bastante no vermelho e apresenta alta resposta no NIR.", "Porque reflete igualmente em todas as bandas.", "Porque não interage com a radiação eletromagnética.", "Porque o NIR é uma banda de radar."], "e": "A clorofila absorve fortemente no vermelho, enquanto a estrutura interna das folhas favorece alta reflectância no NIR.", "c": 0}, {"id": 23, "aula": 2, "t": "Por que o NIR ajuda a diferenciar água e vegetação?", "o": ["Porque a água tende a apresentar baixa resposta no NIR, enquanto a vegetação apresenta resposta elevada.", "Porque água e vegetação sempre apresentam exatamente o mesmo valor.", "Porque o NIR mede somente temperatura.", "Porque o NIR não sofre nenhuma interação com a superfície."], "e": "O contraste espectral entre água e vegetação é frequentemente maior no NIR do que em partes do visível.", "c": 0}, {"id": 24, "aula": 2, "t": "Qual afirmação sobre a escolha da melhor banda é correta?", "o": ["A melhor banda depende do alvo, do entorno e da informação que se deseja observar.", "A banda vermelha é sempre a melhor para qualquer alvo.", "O NIR é sempre a melhor banda para qualquer aplicação.", "Todas as bandas são equivalentes."], "e": "Não existe uma banda universalmente melhor; a escolha deve considerar a resposta espectral dos alvos de interesse.", "c": 0}, {"id": 25, "aula": 3, "t": "Sensores passivos dependem principalmente de:", "o": ["Uma fonte natural ou externa de energia, como o Sol ou a emissão termal dos alvos.", "Energia emitida obrigatoriamente pelo próprio sensor.", "Somente sinais de GPS.", "Apenas dados vetoriais."], "e": "Sensores passivos registram energia disponível naturalmente, em vez de iluminar o alvo com um sinal próprio.", "c": 0}, {"id": 26, "aula": 3, "t": "O que caracteriza um sensor ativo?", "o": ["Ele emite seu próprio sinal e mede a energia que retorna do alvo.", "Ele só funciona durante o dia.", "Ele depende exclusivamente da luz solar.", "Ele não registra nenhuma interação com a superfície."], "e": "Sensores ativos iluminam o alvo com energia própria e medem o retorno do sinal.", "c": 0}, {"id": 27, "aula": 3, "t": "Por que um sensor de radar pode adquirir dados durante a noite?", "o": ["Porque é ativo e utiliza sua própria fonte de energia.", "Porque transforma a noite em dia.", "Porque depende da reflexão da luz solar.", "Porque só registra temperatura."], "e": "O radar não depende da iluminação solar para gerar o sinal utilizado na observação.", "c": 0}, {"id": 28, "aula": 3, "t": "Os sensores ópticos do Landsat são, em geral:", "o": ["Passivos.", "Ativos de radar.", "Sensores instalados no solo.", "Sensores que não utilizam radiação eletromagnética."], "e": "Os sensores ópticos do Landsat utilizam principalmente a radiação solar refletida pela superfície.", "c": 0}, {"id": 29, "aula": 3, "t": "O Sentinel-2 MSI é um exemplo de sensor:", "o": ["Óptico passivo e multiespectral.", "Ativo de radar.", "Exclusivamente termal.", "Somente vetorial."], "e": "O MSI do Sentinel-2 registra várias bandas do espectro refletido e depende da iluminação externa.", "c": 0}, {"id": 30, "aula": 3, "t": "No mecanismo whiskbroom, a cena é formada principalmente por:", "o": ["Varredura mecânica com espelho oscilante ou rotativo.", "Uma única fotografia instantânea sem detecção eletrônica.", "Somente uma matriz vetorial.", "Uma máscara de nuvens."], "e": "O whiskbroom utiliza movimento mecânico para varrer a cena transversalmente à trajetória.", "c": 0}, {"id": 31, "aula": 3, "t": "No mecanismo pushbroom, a aquisição da faixa imageada ocorre por:", "o": ["Uma linha de detectores que registra simultaneamente a largura da faixa.", "Um único detector que precisa girar em círculos.", "Uma câmera fotográfica de filme.", "Um radar meteorológico instalado em solo."], "e": "O pushbroom utiliza arranjos lineares de detectores e dispensa o espelho de varredura mecânica.", "c": 0}, {"id": 32, "aula": 3, "t": "Uma vantagem do sistema pushbroom em relação ao whiskbroom é:", "o": ["Maior tempo de integração do sinal e menor dependência de partes móveis.", "Necessidade obrigatória de mais partes mecânicas.", "Dependência exclusiva de nuvens.", "Impossibilidade de registrar várias bandas."], "e": "Os detectores lineares podem observar cada elemento por mais tempo e reduzem a complexidade mecânica do sistema.", "c": 0}, {"id": 33, "aula": 3, "t": "O que significa dizer que um sensor é multiespectral?", "o": ["Ele registra a superfície em várias bandas do espectro eletromagnético.", "Ele produz apenas uma fotografia em preto e branco.", "Ele funciona somente em uma data.", "Ele armazena somente dados vetoriais."], "e": "Sensores multiespectrais registram a resposta da superfície em diferentes intervalos espectrais.", "c": 0}, {"id": 34, "aula": 3, "t": "Qual conjunto representa componentes essenciais de um sensor imageador multiespectral?", "o": ["Sistema óptico, dispersão, detectores e eletrônica.", "Legenda, escala gráfica, norte e título.", "Pontos, linhas, polígonos e tabelas.", "Somente antena de GPS e bateria."], "e": "O sistema óptico recebe e focaliza a energia, a dispersão separa bandas, os detectores registram o sinal e a eletrônica o converte em dados.", "c": 0}, {"id": 35, "aula": 3, "t": "O aspecto granular conhecido como speckle em imagens de radar, como as do Sentinel-1, está relacionado a:", "o": ["Interferências construtivas e destrutivas do sinal coerente.", "Erro de digitação na legenda.", "Ausência de pixels na imagem óptica.", "Excesso de resolução temporal."], "e": "O speckle é característico de imagens de radar e resulta da interferência entre múltiplos retornos dentro da célula de resolução.", "c": 0}, {"id": 36, "aula": 4, "t": "Quais são as quatro resoluções discutidas para imagens de sensoriamento remoto?", "o": ["Espacial, espectral, radiométrica e temporal.", "Horizontal, vertical, diagonal e orbital.", "Raster, vetor, tabela e texto.", "Azul, verde, vermelho e amarelo."], "e": "As quatro resoluções descrevem diferentes capacidades do sistema sensor.", "c": 0}, {"id": 37, "aula": 4, "t": "A resolução espacial está mais diretamente relacionada a:", "o": ["Tamanho do pixel e nível de detalhe espacial observável.", "Quantidade de datas disponíveis.", "Número de bandas do sensor.", "Quantidade de níveis de brilho."], "e": "A resolução espacial descreve a dimensão do elemento de terreno representado por um pixel.", "c": 0}, {"id": 38, "aula": 4, "t": "A resolução espectral está relacionada a:", "o": ["Número, largura e posição das bandas espectrais.", "Somente ao tamanho do pixel.", "Somente ao intervalo de revisita.", "Apenas à quantidade de linhas da imagem."], "e": "A resolução espectral determina como o sensor separa diferentes regiões do espectro.", "c": 0}, {"id": 39, "aula": 4, "t": "A resolução radiométrica indica:", "o": ["A sensibilidade do sensor para distinguir pequenas diferenças de intensidade do sinal.", "O tamanho do menor polígono vetorial.", "O número de vezes que o satélite passa por dia.", "A posição da imagem no mapa."], "e": "Quanto maior a capacidade de quantização, mais sutis podem ser as diferenças de brilho registradas.", "c": 0}, {"id": 40, "aula": 4, "t": "A resolução temporal representa:", "o": ["A frequência com que uma área pode ser observada novamente.", "O tamanho do pixel.", "O número de bandas.", "A quantidade de níveis de cinza."], "e": "A resolução temporal está ligada à revisita e à capacidade de acompanhar mudanças ao longo do tempo.", "c": 0}, {"id": 41, "aula": 4, "t": "Por que diferentes bandas do Sentinel-2 podem apresentar pixels de tamanhos diferentes?", "o": ["Porque o sensor possui bandas adquiridas com diferentes resoluções espaciais.", "Porque todas as bandas são obrigatoriamente iguais.", "Porque o tamanho do pixel depende apenas da cor escolhida na tela.", "Porque o Google Earth Engine inventa novos pixels."], "e": "No Sentinel-2, as bandas não possuem todas a mesma resolução espacial nominal.", "c": 0}, {"id": 42, "aula": 4, "t": "Considerando uma banda de 10 m do Sentinel-2 e uma banda multiespectral de 30 m do Landsat 8, qual possui pixel nominal menor?", "o": ["Sentinel-2.", "Landsat 8.", "As duas possuem exatamente o mesmo tamanho de pixel.", "Não é possível comparar tamanho de pixel."], "e": "Uma banda de 10 m representa uma grade espacial mais fina que uma banda de 30 m.", "c": 0}, {"id": 43, "aula": 4, "t": "Por que um pixel de 10 m não garante a identificação de qualquer objeto com 10 m?", "o": ["Porque contraste, posição do objeto e mistura com alvos vizinhos também influenciam a detecção.", "Porque objetos de 10 m nunca podem ser observados.", "Porque todo pixel de 10 m representa exatamente um único objeto.", "Porque resolução espacial depende apenas da data."], "e": "A detecção não depende somente do tamanho nominal do pixel; o contraste e a mistura espacial também importam.", "c": 0}, {"id": 44, "aula": 4, "t": "Ao reamostrar uma imagem de 30 m para uma grade de 10 m, o que acontece?", "o": ["A grade passa a ter pixels menores, mas não são criados detalhes espaciais reais que o sensor não registrou.", "A resolução espacial real do sensor melhora automaticamente.", "Novos objetos reais aparecem na imagem.", "A imagem passa a ser um dado vetorial."], "e": "A reamostragem muda a representação da grade, não a informação espacial originalmente medida.", "c": 0}, {"id": 45, "aula": 4, "t": "Para dados categóricos, como classes de uso e cobertura, qual método costuma ser mais apropriado?", "o": ["Vizinho mais próximo.", "Interpolação bilinear.", "Suavização contínua obrigatória.", "Média de todas as classes."], "e": "O vizinho mais próximo preserva os códigos originais das classes, evitando criar valores intermediários inexistentes.", "c": 0}, {"id": 46, "aula": 4, "t": "A interpolação bilinear é mais apropriada quando:", "o": ["Os valores representam uma variável contínua e a suavização entre pixels é aceitável.", "Os códigos são categorias que não podem ser alteradas.", "A imagem não possui pixels.", "O objetivo é manter exatamente os códigos das classes."], "e": "A bilinear utiliza valores vizinhos para interpolar uma superfície contínua e pode modificar valores originais.", "c": 0}, {"id": 47, "aula": 4, "t": "Como a presença frequente de nuvens afeta a resolução temporal útil de uma série óptica?", "o": ["Reduz a quantidade de observações realmente utilizáveis da superfície.", "Aumenta automaticamente o detalhe espacial.", "Aumenta o número de bandas.", "Transforma o sensor passivo em ativo."], "e": "Mesmo que existam muitas passagens, nuvens podem impedir que parte delas seja útil para observar a superfície.", "c": 0}, {"id": 48, "aula": 5, "t": "Como uma imagem raster é organizada?", "o": ["Como uma matriz de linhas e colunas formada por pixels.", "Somente como uma lista de polígonos.", "Como uma sequência de frases.", "Apenas como coordenadas de pontos de campo."], "e": "O modelo raster representa o espaço em uma grade regular de células ou pixels.", "c": 0}, {"id": 49, "aula": 5, "t": "O valor de um pixel representa:", "o": ["Uma medida associada à área coberta por aquela célula, podendo integrar diferentes alvos.", "Sempre um único objeto puro.", "Apenas o nome da banda.", "Somente uma coordenada geográfica."], "e": "O sensor registra uma resposta para a área do pixel; quando há mais de um alvo, o valor pode representar uma mistura.", "c": 0}, {"id": 50, "aula": 5, "t": "O que é um pixel misto?", "o": ["Um pixel que contém contribuição de dois ou mais tipos de alvos.", "Um pixel necessariamente inválido.", "Um pixel que não possui valor.", "Um pixel que representa apenas água."], "e": "Pixels mistos surgem quando a área representada pela célula contém materiais ou coberturas diferentes.", "c": 0}, {"id": 51, "aula": 5, "t": "Qual diferença básica entre raster e vetor?", "o": ["Raster usa células em grade; vetor representa feições por pontos, linhas e polígonos.", "Raster e vetor são exatamente a mesma estrutura.", "Vetor é formado somente por pixels.", "Raster só pode representar textos."], "e": "Os dois modelos representam o espaço de maneiras diferentes: grade matricial no raster e geometrias no vetor.", "c": 0}, {"id": 52, "aula": 5, "t": "Na representação matricial de uma imagem, a origem costuma ficar:", "o": ["No canto superior esquerdo.", "No centro da imagem.", "Sempre no canto inferior direito.", "Fora da imagem."], "e": "Em imagens digitais, linhas e colunas são normalmente contadas a partir do canto superior esquerdo.", "c": 0}, {"id": 53, "aula": 5, "t": "Qual afirmação diferencia corretamente um pixel com valor zero de um pixel mascarado?", "o": ["Zero pode ser um valor válido; pixel mascarado é considerado inválido ou excluído da análise.", "Zero e máscara significam sempre a mesma coisa.", "Pixel mascarado sempre vale 100.", "Todo pixel zero é automaticamente uma nuvem."], "e": "Máscara controla a validade do pixel; o valor zero pode fazer parte dos dados e não deve ser confundido com ausência de informação.", "c": 0}, {"id": 54, "aula": 5, "t": "Por que o tipo numérico dos dados é importante?", "o": ["Porque afeta a precisão possível e o volume de armazenamento e processamento.", "Porque muda a posição geográfica do satélite.", "Porque transforma automaticamente raster em vetor.", "Porque define a cor real do terreno."], "e": "Byte, integer e ponto flutuante possuem capacidades e custos de armazenamento diferentes.", "c": 0}, {"id": 55, "aula": 5, "t": "No formato BSQ, as bandas de uma imagem multibanda são armazenadas:", "o": ["Uma banda inteira após a outra.", "Intercaladas pixel a pixel.", "Intercaladas obrigatoriamente por coluna.", "Somente como vetores."], "e": "BSQ significa Band Sequential: cada banda é armazenada sequencialmente.", "c": 0}, {"id": 56, "aula": 5, "t": "No formato BIL, as bandas são organizadas:", "o": ["Intercaladas por linhas.", "Uma banda completa após a outra.", "Somente em arquivos de texto.", "Como polígonos."], "e": "BIL significa Band Interleaved by Line: a organização alterna as bandas linha a linha.", "c": 0}, {"id": 57, "aula": 5, "t": "No formato BIP, as bandas são organizadas:", "o": ["Intercaladas pixel a pixel.", "Uma banda completa após a outra.", "Apenas em uma linha única.", "Somente por data."], "e": "BIP significa Band Interleaved by Pixel: os valores das bandas de cada pixel ficam próximos entre si.", "c": 0}, {"id": 58, "aula": 5, "t": "Por que o JPEG não é a melhor escolha para armazenar dados quantitativos de sensoriamento remoto?", "o": ["Porque utiliza compressão com perda, podendo alterar informação do dado.", "Porque não pode ser visualizado em computador.", "Porque é obrigatoriamente um formato vetorial.", "Porque aumenta sempre a resolução espacial."], "e": "Para dados científicos, é importante preservar os valores dos pixels; compressão com perda pode modificar a informação.", "c": 0}, {"id": 59, "aula": 6, "t": "Por que a atmosfera interfere no sinal registrado por sensores ópticos?", "o": ["Porque pode absorver e espalhar parte da radiação ao longo do caminho entre fonte, superfície e sensor.", "Porque altera somente o nome das bandas.", "Porque muda a geometria dos polígonos vetoriais.", "Porque elimina toda a radiação em qualquer comprimento de onda."], "e": "A atmosfera modifica a intensidade e a direção da radiação antes que o sinal seja registrado pelo sensor.", "c": 0}, {"id": 60, "aula": 6, "t": "Qual é o principal objetivo da correção atmosférica?", "o": ["Reduzir a influência da atmosfera e estimar uma resposta mais próxima da reflectância da superfície.", "Aumentar artificialmente o tamanho do pixel.", "Transformar raster em vetor.", "Criar nuvens para preencher áreas vazias."], "e": "A correção atmosférica busca separar, tanto quanto possível, o efeito atmosférico da resposta do alvo.", "c": 0}, {"id": 61, "aula": 6, "t": "Qual afirmação caracteriza melhor o espalhamento Rayleigh?", "o": ["Está associado a moléculas muito pequenas e afeta mais fortemente os menores comprimentos de onda do visível.", "É causado principalmente por grandes gotas de nuvem e afeta todas as cores igualmente.", "Ocorre somente dentro do solo.", "É exclusivo de sensores de radar."], "e": "O Rayleigh é um espalhamento molecular e sua influência é particularmente forte na região azul do visível.", "c": 0}, {"id": 62, "aula": 6, "t": "O espalhamento Mie está associado principalmente a:", "o": ["Aerossóis, poeira, fumaça e partículas de tamanho comparável ao comprimento de onda.", "Apenas pixels sem dados.", "Somente grandes polígonos urbanos.", "Exclusivamente à emissão termal da Terra."], "e": "O espalhamento Mie ocorre em atmosferas com partículas maiores que as moléculas responsáveis pelo Rayleigh.", "c": 0}, {"id": 63, "aula": 6, "t": "O espalhamento não seletivo está fortemente relacionado a:", "o": ["Nuvens e neblina, com partículas grandes que espalham de forma semelhante várias faixas do visível.", "Somente moléculas de gás muito pequenas.", "Apenas superfícies metálicas.", "Somente sombras de relevo."], "e": "Quando as partículas são muito maiores que os comprimentos de onda, diferentes cores são espalhadas de forma semelhante, contribuindo para a aparência branca das nuvens.", "c": 0}, {"id": 64, "aula": 6, "t": "Qual efeito o espalhamento atmosférico pode causar na imagem?", "o": ["Adicionar brilho aparente e reduzir o contraste entre alvos.", "Aumentar sempre a resolução espacial.", "Criar novas bandas espectrais.", "Transformar automaticamente TOA em reflectância de superfície."], "e": "O espalhamento adiciona contribuição atmosférica ao sinal e pode tornar alvos diferentes mais parecidos.", "c": 0}, {"id": 65, "aula": 6, "t": "O que caracteriza um produto TOA?", "o": ["Representa o sinal no topo da atmosfera, ainda contendo influência atmosférica.", "É sempre uma reflectância de superfície já corrigida.", "É um produto vetorial.", "É uma imagem sem nenhuma nuvem por definição."], "e": "TOA descreve a informação medida no topo da atmosfera, antes da remoção dos efeitos atmosféricos.", "c": 0}, {"id": 66, "aula": 6, "t": "O que caracteriza um produto de Surface Reflectance (SR)?", "o": ["Busca representar a reflectância da superfície após correção dos efeitos atmosféricos.", "É uma imagem obrigatoriamente sem pixels mascarados.", "É um produto que não pode ser usado em séries temporais.", "Representa somente a posição do satélite."], "e": "SR é mais próximo da resposta física do alvo na superfície e é apropriado para muitas análises quantitativas.", "c": 0}, {"id": 67, "aula": 6, "t": "Para comparar quantitativamente imagens de diferentes datas em uma série óptica, qual produto tende a ser mais apropriado?", "o": ["Reflectância de superfície (SR).", "TOA sem qualquer correção.", "JPEG de visualização.", "Uma imagem escolhida apenas pela cor mais bonita."], "e": "Para comparações quantitativas, é importante reduzir diferenças atmosféricas entre datas; por isso a reflectância de superfície é preferível.", "c": 0}, {"id": 68, "aula": 6, "t": "Qual diferença entre correção atmosférica e máscara de nuvens?", "o": ["A correção estima a reflectância de superfície; a máscara remove ou invalida pixels contaminados.", "São exatamente o mesmo procedimento.", "A máscara transforma TOA em SR.", "A correção apenas apaga pixels de nuvens."], "e": "Os processos são complementares, mas diferentes: um corrige o sinal; o outro controla quais pixels são considerados válidos.", "c": 0}, {"id": 69, "aula": 6, "t": "Na prática com Sentinel-2, para que serve a banda SCL?", "o": ["Para classificar a cena em categorias que ajudam a identificar nuvens, sombras e outros tipos de pixels.", "Para aumentar a resolução espacial de todas as bandas.", "Para substituir todas as bandas espectrais.", "Para converter automaticamente raster em vetor."], "e": "A Scene Classification Layer fornece classes de qualidade e cobertura úteis na construção de máscaras.", "c": 0}, {"id": 70, "aula": 6, "t": "Por que uma composição temporal feita com várias imagens mascaradas pode ser útil?", "o": ["Porque combina observações válidas de diferentes datas e reduz a interferência de nuvens e sombras.", "Porque cria detalhes espaciais que o sensor nunca observou.", "Porque elimina a necessidade de qualquer controle de qualidade.", "Porque transforma um sensor passivo em ativo."], "e": "A composição temporal aproveita pixels válidos de diferentes datas para produzir uma imagem mais limpa e útil para análise.", "c": 0}], "memoria": [{"e": "🌍", "a": "Sensoriamento remoto", "b": "Medição da superfície sem contato físico direto"}, {"e": "⚡", "a": "Radiação eletromagnética", "b": "Meio que transporta a informação entre alvo e sensor"}, {"e": "👁️", "a": "Visível", "b": "Faixa ligada às cores observadas e pigmentos"}, {"e": "🌿", "a": "NIR", "b": "Faixa com forte resposta da vegetação verde"}, {"e": "💧", "a": "SWIR", "b": "Faixa sensível à água e a características de minerais"}, {"e": "🪞", "a": "Reflexão", "b": "Energia devolvida pelo alvo"}, {"e": "🧽", "a": "Absorção", "b": "Energia retida pelo material"}, {"e": "🪟", "a": "Transmissão", "b": "Energia que atravessa o material"}, {"e": "🏔️", "a": "Interação macroscópica", "b": "Relacionada à forma, textura, rugosidade e geometria"}, {"e": "⚛️", "a": "Interação microscópica", "b": "Relacionada a trocas de energia atômicas e moleculares"}, {"e": "📷", "a": "Sensor passivo", "b": "Depende de uma fonte externa ou natural de energia"}, {"e": "📡", "a": "Sensor ativo", "b": "Emite seu próprio sinal e mede o retorno"}, {"e": "🔍", "a": "Resolução espacial", "b": "Tamanho do pixel e detalhe espacial"}, {"e": "🌈", "a": "Resolução espectral", "b": "Número, largura e posição das bandas"}, {"e": "🎚️", "a": "Resolução radiométrica", "b": "Sensibilidade a pequenas diferenças de intensidade"}, {"e": "🕒", "a": "Resolução temporal", "b": "Frequência de nova observação da área"}, {"e": "🔲", "a": "Raster", "b": "Matriz de pixels"}, {"e": "📐", "a": "Vetor", "b": "Pontos, linhas e polígonos"}, {"e": "☁️", "a": "TOA", "b": "Sinal no topo da atmosfera, ainda influenciado pela atmosfera"}, {"e": "🏞️", "a": "Surface Reflectance", "b": "Reflectância estimada para a superfície após correção atmosférica"}, {"e": "🏷️", "a": "SCL", "b": "Camada de classificação da cena usada para identificar nuvens, sombras e outros pixels"}], "relacione": [{"t": "Interação da radiação", "itens": [["Reflexão", "Energia devolvida pelo alvo"], ["Absorção", "Energia retida pelo material"], ["Transmissão", "Energia que atravessa o material"], ["Interação macroscópica", "Forma, textura, rugosidade e geometria"], ["Interação microscópica", "Processos atômicos e moleculares"]]}, {"t": "Resoluções", "itens": [["Espacial", "Tamanho do pixel / detalhe"], ["Espectral", "Número, largura e posição das bandas"], ["Radiométrica", "Sensibilidade a diferenças de intensidade"], ["Temporal", "Frequência de observação"]]}, {"t": "Dados", "itens": [["Raster", "Matriz de pixels"], ["Vetor", "Pontos, linhas e polígonos"], ["Pixel puro", "Predomínio de um único alvo"], ["Pixel misto", "Contribuição de mais de um alvo"], ["Máscara", "Define pixels válidos ou inválidos"]]}, {"t": "Atmosfera e produtos", "itens": [["Rayleigh", "Moléculas pequenas; forte efeito no azul"], ["Mie", "Aerossóis, poeira e fumaça"], ["Não seletivo", "Nuvens e neblina"], ["TOA", "Produto ainda influenciado pela atmosfera"], ["SR", "Reflectância estimada para a superfície"], ["SCL", "Classes úteis para identificar nuvens e sombras"]]}], "quem": [{"pista": "Sou um programa histórico de observação da Terra, usado para monitoramento orbital sistemático e repetitivo.", "r": "Landsat"}, {"pista": "Sou uma missão óptica multiespectral com bandas de diferentes resoluções espaciais e muito utilizada nas práticas da disciplina.", "r": "Sentinel-2"}, {"pista": "Sou uma faixa em que a vegetação verde costuma responder fortemente, enquanto a água tende a ficar escura.", "r": "Infravermelho próximo (NIR)"}, {"pista": "Sou uma faixa importante para observar água nos materiais e características de minerais.", "r": "SWIR"}, {"pista": "Sou um processo atmosférico molecular que afeta especialmente a luz azul.", "r": "Espalhamento Rayleigh"}, {"pista": "Apareço em atmosferas com aerossóis, poeira e fumaça e posso reduzir o contraste da imagem.", "r": "Espalhamento Mie"}, {"pista": "Sou comum em nuvens e neblina e espalho várias cores de forma semelhante.", "r": "Espalhamento não seletivo"}, {"pista": "Indico o tamanho do pixel e o nível de detalhe espacial observável.", "r": "Resolução espacial"}, {"pista": "Sou uma estrutura em linhas e colunas formada por células com valores.", "r": "Raster"}, {"pista": "Dentro de mim existem contribuições de mais de um tipo de alvo.", "r": "Pixel misto"}, {"pista": "No Sentinel-2, classifico pixels como nuvem, sombra, vegetação, água e outras categorias.", "r": "SCL"}, {"pista": "Sou o produto mais indicado quando se quer reduzir a influência atmosférica e trabalhar com resposta mais próxima da superfície.", "r": "Surface Reflectance"}], "qextras": {"Landsat": {"p2": "Minha série começou em 1972 e segue em operação até hoje.", "p3": "Sou mantido pelos Estados Unidos, e meu satélite atual (Landsat 8) tem sensores ópticos passivos.", "exp": "O Landsat é o programa histórico das aulas: consolidou o monitoramento orbital sistemático e repetitivo dos recursos terrestres."}, "Sentinel-2": {"p2": "Sou da ESA (programa Copernicus) e tenho gêmeos: satélites A e B.", "p3": "Consigo revisitar uma área em cerca de 5 dias, e minhas bandas têm resoluções espaciais diferentes (10, 20 e 60 m).", "exp": "O Sentinel-2 é uma missão óptica multiespectral com bandas de diferentes resoluções espaciais — muito usado nas práticas da disciplina."}, "Infravermelho próximo (NIR)": {"p2": "Folhas saudáveis refletem muito em mim.", "p3": "Sou vizinho do vermelho, mas o olho humano não me vê.", "exp": "No NIR a vegetação verde responde fortemente e a água tende a ficar escura — bom contraste entre esses alvos."}, "SWIR": {"p2": "Ajudo a observar umidade, queimadas e características de minerais.", "p3": "Tenho comprimento de onda maior que o NIR.", "exp": "O SWIR tem regiões importantes para observar absorções associadas à água e a diferentes materiais."}, "Espalhamento Rayleigh": {"p2": "Sou o motivo de o céu parecer azul.", "p3": "Afeto mais fortemente os comprimentos de onda menores do visível.", "exp": "Espalhamento molecular: moléculas pequenas afetam mais a região azul do visível."}, "Espalhamento Mie": {"p2": "Poeira e fumaça de queimada me produzem.", "p3": "Minhas partículas são maiores do que as moléculas do espalhamento Rayleigh.", "exp": "O espalhamento Mie está associado a aerossóis, poeira e fumaça, e pode reduzir o contraste da imagem."}, "Espalhamento não seletivo": {"p2": "Nuvens e neblina são meu exemplo clássico.", "p3": "Espalho todas as cores de forma semelhante — por isso as nuvens parecem brancas.", "exp": "Com partículas muito maiores que os comprimentos de onda, várias faixas são espalhadas de modo semelhante."}, "Resolução espacial": {"p2": "Sou um dos quatro tipos de resolução.", "p3": "Pixel pequeno significa que sou alta; reamostragem não me melhora de verdade.", "exp": "A resolução espacial indica o tamanho do pixel e o nível de detalhe espacial observável."}, "Raster": {"p2": "Sou um modelo de dados, não um sensor.", "p3": "Meu rival organiza feições em pontos, linhas e polígonos.", "exp": "Raster é a representação em grade regular de células (pixels), com valores em linhas e colunas."}, "Pixel misto": {"p2": "Apareço quando a célula cobre mais de um tipo de alvo.", "p3": "Uma borda entre rio e floresta me produz com facilidade.", "exp": "Pixel misto contém contribuição de dois ou mais alvos dentro da mesma célula."}, "SCL": {"p2": "Sou uma camada do Sentinel-2.", "p3": "Tenho classes como nuvem, sombra, vegetação e água.", "exp": "A SCL (Scene Classification Layer) classifica cada pixel da cena e ajuda a construir máscaras de nuvens e sombras."}, "Surface Reflectance": {"p2": "Sou o resultado da correção atmosférica.", "p3": "Sou o produto preferido para comparações quantitativas entre datas.", "exp": "SR representa a reflectância da superfície após reduzir a influência atmosférica — melhor que TOA para séries quantitativas."}}, "detetive": [{"n": 1, "frase": "Se eu reamostrar uma imagem Landsat de 30 m para 10 m, ela passa a ter o mesmo nível real de detalhe de uma banda Sentinel-2 de 10 m.", "erro": "reamostragem muda a grade, mas não cria informação espacial real que não foi medida pelo sensor."}, {"n": 2, "frase": "Para comparar uma série temporal quantitativamente, TOA e SR podem ser usados como se fossem exatamente o mesmo produto.", "erro": "TOA ainda inclui maior influência atmosférica; SR busca representar reflectância de superfície."}, {"n": 3, "frase": "Aplicar máscara de nuvens e fazer correção atmosférica são exatamente a mesma operação.", "erro": "a correção ajusta o sinal; a máscara exclui pixels considerados inadequados."}, {"n": 4, "frase": "Um pixel com valor zero e um pixel mascarado significam sempre a mesma coisa.", "erro": "zero pode ser um valor válido; um pixel mascarado é tratado como inválido."}, {"n": 5, "frase": "Quanto menor o pixel, melhor será a imagem para qualquer aplicação.", "erro": "a escolha depende do objetivo, do volume de dados, do contraste e das demais resoluções."}, {"n": 6, "frase": "A banda vermelha é sempre a melhor banda para identificar qualquer alvo.", "erro": "a melhor banda depende do comportamento espectral do alvo e do entorno."}, {"n": 7, "frase": "A interpolação bilinear é sempre a melhor escolha para reamostrar classes categóricas.", "erro": "dados categóricos devem preservar códigos; vizinho mais próximo costuma ser mais apropriado."}, {"n": 8, "frase": "Se a cena possui baixo percentual geral de nuvens, toda a área de estudo estará necessariamente sem nuvens.", "erro": "o percentual descreve a cena como um todo e não garante condição limpa na área específica."}, {"n": 9, "frase": "O parâmetro min/max de visualização altera os valores físicos de reflectância armazenados nos pixels.", "erro": "min/max controla a visualização, não os valores originais do dado."}, {"n": 10, "frase": "Uma composição temporal elimina a necessidade de mascarar nuvens e sombras.", "erro": "a composição funciona melhor quando os pixels contaminados são previamente identificados e mascarados."}, {"n": 11, "frase": "O Sentinel-2 possui todas as bandas com a mesma resolução espacial.", "erro": "suas bandas possuem diferentes resoluções espaciais nominais."}, {"n": 12, "frase": "O speckle de uma imagem Sentinel-1 é simplesmente uma nuvem óptica sobre a cena.", "erro": "speckle é um efeito característico do radar associado à interferência do sinal coerente."}], "vf": [{"n": 1, "f": "Sensoriamento remoto exige contato físico com o alvo.", "v": false, "e": "O sensoriamento remoto é justamente medir sem contato físico direto — à distância."}, {"n": 2, "f": "A radiação eletromagnética transporta informação do alvo ao sensor.", "v": true, "e": "A informação chega ao sensor pela radiação eletromagnética refletida ou emitida pelo alvo."}, {"n": 3, "f": "O NIR pode ajudar a diferenciar água e vegetação.", "v": true, "e": "No NIR a água fica escura e a vegetação responde alto: os alvos se separam bem."}, {"n": 4, "f": "Não existe uma única banda que seja a melhor para todos os alvos.", "v": true, "e": "Cada alvo tem um comportamento espectral próprio; a melhor banda depende do objetivo."}, {"n": 5, "f": "Sensores ativos dependem obrigatoriamente da luz solar.", "v": false, "e": "Sensores ativos emitem o próprio sinal (ex.: radar) e não dependem do Sol."}, {"n": 6, "f": "O radar pode operar durante a noite.", "v": true, "e": "Por ser ativo, o radar opera dia e noite, sem esperar a luz solar."}, {"n": 7, "f": "Resolução espacial e resolução temporal significam a mesma coisa.", "v": false, "e": "Espacial = tamanho do pixel e detalhe; temporal = frequência de revisita. São diferentes."}, {"n": 8, "f": "Uma banda com pixel menor sempre resolve qualquer objeto do mesmo tamanho.", "v": false, "e": "Contraste, posição e mistura com alvos vizinhos também influenciam a detecção."}, {"n": 9, "f": "Reamostragem cria novo detalhe real que não existia na imagem original.", "v": false, "e": "A reamostragem muda a grade, mas não cria detalhe real que o sensor não mediu."}, {"n": 10, "f": "Raster é uma estrutura matricial.", "v": true, "e": "Raster é a grade matricial de células; vetor usa pontos, linhas e polígonos."}, {"n": 11, "f": "Um pixel pode representar uma mistura de alvos.", "v": true, "e": "Quando o pixel cobre mais de um alvo, o valor integra essa mistura."}, {"n": 12, "f": "Pixel zero e pixel mascarado são sempre equivalentes.", "v": false, "e": "Zero pode ser valor válido; a máscara marca pixels inválidos — são coisas diferentes."}, {"n": 13, "f": "JPEG pode envolver perda de informação.", "v": true, "e": "JPEG usa compressão com perda e pode alterar o valor do dado."}, {"n": 14, "f": "A atmosfera pode reduzir o contraste entre alvos.", "v": true, "e": "O espalhamento atmosférico adiciona brilho e reduz o contraste entre alvos."}, {"n": 15, "f": "Rayleigh afeta fortemente comprimentos de onda menores do visível.", "v": true, "e": "O Rayleigh é molecular e atinge mais a região azul (menores comprimentos de onda)."}, {"n": 16, "f": "TOA e SR representam exatamente o mesmo nível de processamento.", "v": false, "e": "TOA ainda contém influência atmosférica; o SR é corregido para a superfície."}, {"n": 17, "f": "A máscara de nuvens substitui a correção atmosférica.", "v": false, "e": "A máscara marca pixels contaminados; a correção ajusta o sinal — são complementares."}, {"n": 18, "f": "A SCL do Sentinel-2 pode ajudar a identificar sombras e nuvens.", "v": true, "e": "A SCL classifica a cena em categorias como nuvem, sombra, vegetação e água."}, {"n": 19, "f": "Uma composição temporal pode aproveitar pixels válidos de datas diferentes.", "v": true, "e": "A composição temporal junta pixels válidos de datas diferentes numa imagem mais limpa."}, {"n": 20, "f": "Para séries quantitativas ópticas, a reflectância de superfície costuma ser preferível a TOA.", "v": true, "e": "Para séries quantitativas, o SR reduz as diferenças atmosféricas entre datas."}], "classif": [{"cat": "Processo de interação", "cartoes": ["Reflexão", "Absorção", "Transmissão"]}, {"cat": "Tipo de sensor", "cartoes": ["Passivo", "Ativo"]}, {"cat": "Tipo de resolução", "cartoes": ["Espacial", "Espectral", "Radiométrica", "Temporal"]}, {"cat": "Modelo de dado", "cartoes": ["Raster", "Vetor"]}, {"cat": "Efeito atmosférico", "cartoes": ["Rayleigh", "Mie", "Não seletivo"]}, {"cat": "Nível/produto", "cartoes": ["TOA", "Surface Reflectance"]}, {"cat": "Qualidade Sentinel-2", "cartoes": ["SCL", "Máscara de nuvens e sombras"]}]};
 
-/* =========================================================
-   2) JOGO DA MEMÓRIA — temas e pares
-   Cada par tem duas faces: uma visual (emoji ou 'quadro' colorido da banda)
-   e uma textual (conceito). Elas se combinam como imagem + conceito. */
-const TEMAS = {
-  sensores: {
-    titulo:'📡 Sensores', sub:'Passivo × ativo × termal', ic:'📷',
-    pares:[
-      {face:{t:'emo', v:'📷'}, par:{t:'txt', h:'Sensor PASSIVO', s:'capta a luz vinda do Sol'}},
-      {face:{t:'emo', v:'📡'}, par:{t:'txt', h:'Sensor ATIVO (radar)', s:'emite o próprio sinal e mede o retorno'}},
-      {face:{t:'emo', v:'🌡️'}, par:{t:'txt', h:'Sensor TERMAL', s:'vê o calor emitido pelo alvo'}},
-      {face:{t:'emo', v:'☀️'}, par:{t:'txt', h:'Fonte do passivo', s:'o SOL ilumina o alvo para o sensor enxergar'}}
-    ]
-  },
-  satelites: {
-    titulo:'🛰️ Satélites', sub:'Landsat e Sentinel', ic:'🛰️',
-    pares:[
-      {face:{t:'emo', v:'🇺🇸'}, par:{t:'txt', h:'Landsat 8', s:'NASA — Estados Unidos'}},
-      {face:{t:'emo', v:'🇪🇺'}, par:{t:'txt', h:'Sentinel-2', s:'ESA — Europa'}},
-      {face:{t:'emo', v:'📡'}, par:{t:'txt', h:'Sentinel-1', s:'o satélite de RADAR (ativo)'}},
-      {face:{t:'emo', v:'🌿'}, par:{t:'txt', h:'Sentinel-2', s:'óptico: vê a vegetação saudável'}},
-      {face:{t:'emo', v:'🗺️'}, par:{t:'txt', h:'Landsat', s:'desde 1972 mapeia os recursos da Terra'}}
-    ]
-  },
-  bandas: {
-    titulo:'🌈 Bandas', sub:'Cada banda revela um alvo', ic:'🌈',
-    pares:[
-      {face:{t:'swatch', c:'#2563eb', l:'AZUL'}, par:{t:'txt', h:'Banda AZUL (coastal)', s:'enxerga o fundo de águas'}},
-      {face:{t:'swatch', c:'#16a34a', l:'VERDE'}, par:{t:'txt', h:'Banda VERDE', s:'mostra a vegetação e o mar claro'}},
-      {face:{t:'swatch', c:'#dc2626', l:'VERMELHA'}, par:{t:'txt', h:'Banda VERMELHA', s:'distingue solo e plantações'}},
-      {face:{t:'swatch', c:'#9333ea', l:'NIR'}, par:{t:'txt', h:'Infravermelho próximo', s:'vegetação SAUDÁVEL brilha aqui'}},
-      {face:{t:'swatch', c:'#ea580c', l:'SWIR'}, par:{t:'txt', h:'Infravermelho de ondas curtas', s:'enxerga umidade e queimadas'}},
-      {face:{t:'emo', v:'🔥'}, par:{t:'txt', h:'Banda TERMAL', s:'mede o calor: incêndios e vulcões'}}
-    ]
-  }
-};
+/* ================= base ================= */
+const $ = id => document.getElementById(id);
+let jogador = '';
 
-/* =========================================================
-   3) ESTADO COMPARTILHADO  */
-const $=id=>document.getElementById(id);
 function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $(id).classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0, behavior:'smooth'});
 }
-function getBank(n){ return parseInt(localStorage.getItem('qr_bank_'+n)||'0',10); }
-function setBank(n,v){ localStorage.setItem('qr_bank_'+n,String(v)); }
+function getBank(n){ return parseInt(localStorage.getItem('qr_bank_'+n) || '0', 10); }
+function setBank(n, v){ localStorage.setItem('qr_bank_'+n, String(v)); }
+function addCoins(v){
+  setBank(jogador, getBank(jogador) + v);
+  const p = document.createElement('div');
+  p.className = 'prize-pop';
+  p.textContent = '+' + v + ' 💰';
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 1000);
+  return v;
+}
 function shuffle(arr){
-  const a=[...arr];
-  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  const a = [...arr];
+  for(let i = a.length-1; i > 0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
   return a;
 }
-function refreshBank(){
-  $('pBank').textContent=getBank(jogador);
-}
-
-/* ---------- perguntas: estado ---------- */
-let jogador='', aulaAtual=null, questoes=[], idx=0, score=0, streak=0,
-    bestStreak=0, log=[], ord=[], sessao=0;
-
-/* ---------- memória: estado ---------- */
-let memTema=null, memCards=[], memFlipped=[], memLock=false, memMatched=0,
-    memMoves=0, memCoins=0, memTimer=null, memSecs=0;
-
-/* =========================================================
-   4) HUB  */
 function openHub(){
-  $('pName').textContent=jogador;
-  refreshBank();
+  $('pName').textContent = jogador;
+  $('pBank').textContent = getBank(jogador);
   show('hub');
 }
-$('cardQuiz').onclick=()=>{ buildQMenu(); show('qMenu'); };
-$('cardMem').onclick=()=>{ buildMemMenu(); show('memMenu'); };
 
-/* =========================================================
-   5) JOGO DAS PERGUNTAS  */
-function getBest(n){ return localStorage.getItem('qr_best_'+n); }
-function setBest(n,v){ localStorage.setItem('qr_best_'+n,v); }
-
-function buildQMenu(){
-  const g=$('qMenuGrid'); g.innerHTML='';
-  const totalQ=AULAS.reduce((s,a)=>s+a.questoes.length,0);
-  const mix=document.createElement('div');
-  mix.className='sel-card wide hub-mix';
-  mix.innerHTML=`<span class="sel-num">⭐ MODO GERAL</span>
-    <h2>Quiz geral — questões sorteadas de todas as aulas</h2>
-    <small>12 questões sorteadas de ${totalQ}</small>`;
-  mix.onclick=()=>startQuiz(null);
-  g.appendChild(mix);
-  AULAS.forEach(a=>{
-    const d=document.createElement('div');
-    d.className='sel-card';
-    const b=getBest(a.num);
-    d.innerHTML=`<span class="sel-num">Aula ${a.num} ${a.emoji}</span>
-      <h2>${a.titulo}</h2>
-      <small>${a.questoes.length} questões</small>
-      ${b?`<div class="best">🏅 Melhor: ${Math.round(b)}%</div>`:''}`;
-    d.onclick=()=>startQuiz(a.num);
-    g.appendChild(d);
+/* ================= hub: 8 jogos ================= */
+const HUB = [
+  {g:'perguntas', ic:'✍️', tag:'JOGO 1', t:'Quiz por fases', d:'Banco de 70 questões • filtros por aula • 3 vidas • prêmios que crescem com a sequência 🔥', fn:() => { openQMenu(); }},
+  {g:'perguntas', ic:'🛰️', tag:'JOGO 6', t:'Missão Satélite', d:'6 fases + desafio final — acerte 60% de cada fase e entregue a imagem pronta para análise', fn:() => { openMisMenu(); }},
+  {g:'perguntas', ic:'✅', tag:'JOGO 7', t:'Verdadeiro ou Falso — Combo', d:'Rodadas rápidas • o combo 🔥 aumenta o prêmio, mas zera se errar', fn:() => { startVf(); }},
+  {g:'perguntas', ic:'🕵️', tag:'JOGO 4', t:'Quem sou eu?', d:'12 conceitos-chave • pistas liberadas progressivamente • menos pistas = mais prêmio', fn:() => { startQuem(); }},
+  {g:'perguntas', ic:'🔎', tag:'JOGO 5', t:'Detetive do erro', d:'8 casos sorteados • a frase parece correta… mas será que está? Marque a resposta!', fn:() => { startDet(); }},
+  {g:'memoria', ic:'🧠', tag:'JOGO 2', t:'Jogo da Memória', d:'21 pares conceituais • 12 sorteados por partida • conceito + definição', fn:() => { startMem(); }},
+  {g:'memoria', ic:'🔗', tag:'JOGO 3', t:'Relacione os conceitos', d:'4 rodadas: interação, resoluções, dados e atmosfera • encaixe cada cartão no destino', fn:() => { openRelMenu(); }},
+  {g:'memoria', ic:'🗂️', tag:'JOGO 8', t:'Classifique corretamente', d:'Distribua cartões entre 7 categorias • errou? o cartão volta ao fim da fila', fn:() => { startClas(); }}
+];
+function buildHub(){
+  const g = $('hubGrid'); g.innerHTML = '';
+  const grp = { perguntas:'📝 Perguntas e desafios', memoria:'🧩 Jogos de associação' };
+  ['perguntas','memoria'].forEach(k => {
+    const gt = document.createElement('div');
+    gt.className = 'group-title wide';
+    gt.textContent = grp[k];
+    g.appendChild(gt);
+    HUB.filter(h => h.g === k).forEach(h => {
+      const d = document.createElement('div');
+      d.className = 'sel-card hub-card ' + (k === 'perguntas' ? 'hub-questions' : 'hub-mem');
+      d.innerHTML = `<div class="ic">${h.ic}</div><div>
+        <span class="sel-num">${h.tag}</span><h2>${h.t}</h2>
+        <small>${h.d}</small></div>`;
+      d.onclick = h.fn;
+      g.appendChild(d);
+    });
   });
-  $('footTotal').textContent=totalQ;
 }
 
-function startQuiz(num){
-  aulaAtual=num;
-  let pool=[];
-  if(num===null){
-    AULAS.forEach(a=>a.questoes.forEach(q=>pool.push({...q,aula:a.num})));
-    pool=shuffle(pool).slice(0,12);
+/* ================= JOGO 1: QUIZ (também usado pela Missão) ================= */
+const QUIZ = { list:[], idx:0, score:0, streak:0, bestStreak:0, coins:0, ord:[],
+               vidas:3, vidasVis:3, modo:'quiz', filtro:null, log:[], after:null };
+function getBest(n){ return localStorage.getItem('qr_best_'+n); }
+function setBest(n, v){ localStorage.setItem('qr_best_'+n, v); }
+
+function buildQMenu(){
+  const g = $('qMenuGrid'); g.innerHTML = '';
+  const mix = document.createElement('div');
+  mix.className = 'sel-card wide hub-mix';
+  mix.innerHTML = `<span class="sel-num">⭐ REVISÃO GERAL</span>
+    <h2>Quiz geral — questões sorteadas de todas as aulas</h2>
+    <small>12 questões sorteadas de ${DATA.questoes.length} • 3 vidas ❤️</small>`;
+  mix.onclick = () => startQuiz(null);
+  g.appendChild(mix);
+  DATA.aulas.forEach(a => {
+    const d = document.createElement('div');
+    d.className = 'sel-card';
+    const qts = DATA.questoes.filter(q => q.aula === a.num).length;
+    const b = getBest(a.num);
+    d.innerHTML = `<span class="sel-num">Aula ${a.num} ${a.emoji}</span>
+      <h2>${a.titulo}</h2><small>${qts} questões</small>
+      ${b ? `<div class="best">🏅 Melhor: ${Math.round(b)}%</div>` : ''}`;
+    d.onclick = () => startQuiz(a.num);
+    g.appendChild(d);
+  });
+}
+function openQMenu(){ buildQMenu(); show('qMenu'); }
+
+function startQuiz(filtroAula, modo, after, titulo){
+  QUIZ.modo = modo || 'quiz';
+  QUIZ.after = after || null;
+  QUIZ.filtro = filtroAula;
+  let pool;
+  if(filtroAula === null){
+    pool = shuffle(DATA.questoes).slice(0, 12);
+  } else if(Array.isArray(filtroAula)){
+    pool = filtroAula.slice();
   } else {
-    const a=AULAS.find(x=>x.num===num);
-    a.questoes.forEach(q=>pool.push({...q,aula:a.num}));
+    pool = shuffle(DATA.questoes.filter(q => q.aula === filtroAula));
   }
-  questoes=shuffle(pool);
-  idx=0; score=0; streak=0; bestStreak=0; sessao=0; log=[];
-  $('qTotal').textContent=questoes.length;
-  $('qBank').textContent=sessao+' 💰 (total: '+getBank(jogador)+')';
-  $('qAula').textContent = num===null ? 'Modo Geral' : 'Aula '+num+' · '+AULAS.find(x=>x.num===num).titulo;
+  QUIZ.list = pool;
+  QUIZ.idx = 0; QUIZ.score = 0; QUIZ.streak = 0; QUIZ.bestStreak = 0; QUIZ.coins = 0; QUIZ.log = [];
+  QUIZ.vidas = 3; QUIZ.vidasVis = (QUIZ.modo === 'quiz') ? 3 : -1;
+  $('qModo').textContent = titulo || (filtroAula === null ? 'Revisão geral' : 'Aula ' + filtroAula);
+  $('qTotal').textContent = pool.length;
+  $('chipVidas').style.display = QUIZ.vidasVis < 0 ? 'none' : '';
   show('game');
   renderQ();
 }
 
 function renderQ(){
-  const q=questoes[idx];
-  ord=shuffle([0,1,2,3]); // posição das alternativas sorteada a cada questão
-  $('qNum').textContent=idx+1;
-  $('qScore').textContent=score;
-  $('qStreak').textContent=streak;
-  $('qBank').textContent=sessao+' 💰 (total: '+getBank(jogador)+')';
-  $('qBar').style.width=(idx/questoes.length*100)+'%';
-  $('qTag').textContent='Aula '+q.aula+' — Questão '+(idx+1);
-  $('qText').textContent=q.t;
-  $('qFeedback').className='feedback';
-  $('qFeedback').innerHTML='';
-  $('btnNext').style.display='none';
-  const box=$('qOpts'); box.innerHTML='';
-  ord.forEach((realI,displayI)=>{
-    const b=document.createElement('button');
-    b.className='opt';
-    b.innerHTML=`<span class="letter">${'ABCD'[displayI]}</span><span>${q.o[realI]}</span>`;
-    b.onclick=()=>answerQ(displayI);
+  const q = QUIZ.list[QUIZ.idx];
+  QUIZ.ord = shuffle([0,1,2,3]); // posição sorteada a cada questão
+  $('qNum').textContent = QUIZ.idx + 1;
+  $('qScore').textContent = QUIZ.score;
+  $('qVidas').textContent = QUIZ.vidas;
+  $('qCoins').textContent = QUIZ.coins;
+  $('qBar').style.width = (QUIZ.idx / QUIZ.list.length * 100) + '%';
+  const a = DATA.aulas.find(x => x.num === q.aula);
+  $('qTag').textContent = 'Aula ' + q.aula + ' — ' + a.titulo + ' • Questão ' + (QUIZ.idx + 1);
+  $('qText').textContent = q.t;
+  $('qFeedback').className = 'feedback';
+  $('qFeedback').innerHTML = '';
+  $('btnNext').style.display = 'none';
+  const box = $('qOpts'); box.innerHTML = '';
+  QUIZ.ord.forEach((realI, dispI) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="letter">${'ABCD'[dispI]}</span><span>${q.o[realI]}</span>`;
+    b.onclick = () => answerQ(dispI);
     box.appendChild(b);
   });
 }
 
-function prizeValue(){ return 10 + streak*10; } // prêmio cresce com a sequência: 10, 20, 30...
+/* prêmio do quiz: 10 💰 + bônus por sequência */
+function quizPrize(){ return 10 + (QUIZ.streak * 10); }
 
 function answerQ(sel){
-  const q=questoes[idx];
-  const ok = ord[sel]===q.c;
-  document.querySelectorAll('#qOpts .opt').forEach((b,i)=>{
-    b.disabled=true;
-    if(ord[i]===q.c) b.classList.add('correct');
-    else if(i===sel && !ok) b.classList.add('wrong');
+  const q = QUIZ.list[QUIZ.idx];
+  const ok = QUIZ.ord[sel] === q.c;
+  document.querySelectorAll('#qOpts .opt').forEach((b, i) => {
+    b.disabled = true;
+    if(QUIZ.ord[i] === q.c) b.classList.add('correct');
+    else if(i === sel && !ok) b.classList.add('wrong');
     else b.classList.add('dim');
   });
-  let valor=0;
+  let valor = 0;
   if(ok){
-    valor=prizeValue();
-    score++; streak++; bestStreak=Math.max(bestStreak,streak);
-    sessao+=valor;
-    setBank(jogador, getBank(jogador)+valor);
-    const p=document.createElement('div');
-    p.className='prize-pop';
-    p.textContent='+'+valor+' 💰';
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),1000);
+    QUIZ.score++;
+    QUIZ.streak++;
+    QUIZ.bestStreak = Math.max(QUIZ.bestStreak, QUIZ.streak);
+    valor = quizPrize();
+    QUIZ.coins += addCoins(valor);
   } else {
-    streak=0;
+    QUIZ.streak = 0;
+    if(QUIZ.vidasVis > 0) QUIZ.vidas--;
+    $('qVidas').textContent = QUIZ.vidas;
   }
-  const letraC='ABCD'[ord.indexOf(q.c)];
-  const txtC=q.o[q.c];
-  const fb=$('qFeedback');
-  fb.className='feedback show '+(ok?'ok':'err');
-  fb.innerHTML=`<div class="verdict">${ok?'✅ Correto!':'❌ Resposta incorreta — a correta é a alternativa '+letraC+' ('+txtC.slice(0,80)+(txtC.length>80?'…':'')+')'}</div><div>💡 ${q.e}</div>`+(ok?`<div class="prize">Prêmio: +${valor} 💰 (sequência x${streak})</div>`:'');
-  $('qScore').textContent=score;
-  $('qStreak').textContent=streak;
-  $('qBank').textContent=sessao+' 💰 (total: '+getBank(jogador)+')';
-  log.push({q, sel:ord[sel], ok, valor});
-  $('btnNext').style.display='inline-block';
-  $('btnNext').textContent = idx===questoes.length-1 ? 'Ver resultado 🏁' : 'Próxima →';
+  const letraC = 'ABCD'[QUIZ.ord.indexOf(q.c)];
+  const txtC = q.o[q.c];
+  const fb = $('qFeedback');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+  let vidaMsg = '';
+  if(!ok && QUIZ.vidasVis > 0){
+    vidaMsg = QUIZ.vidas > 0 ? ` — perdeu uma vida! Restam ${QUIZ.vidas} ❤️` : ' — ❤️ Acabaram as vidas!';
+  }
+  fb.innerHTML = `<div class="verdict">${ok ? '✅ Correto!' : '❌ Resposta incorreta — a correta é a alternativa ' + letraC + ' (' + txtC.slice(0, 90) + (txtC.length > 90 ? '…' : '') + ')' + vidaMsg}</div>
+    <div>💡 ${q.e}</div>` + (ok ? `<div class="prize">Prêmio: +${valor} 💰 (sequência x${QUIZ.streak})</div>` : '');
+  $('qScore').textContent = QUIZ.score;
+  $('qCoins').textContent = QUIZ.coins;
+  if(!ok && QUIZ.vidas === 0 && QUIZ.vidasVis > 0) $('btnNext').textContent = 'Ver resultado 🏁';
+  QUIZ.log.push({ q, sel: QUIZ.ord[sel], ok, valor });
+  $('btnNext').style.display = 'inline-block';
+  if(!$('btnNext').textContent.includes('resultado'))
+    $('btnNext').textContent = QUIZ.idx === QUIZ.list.length - 1 ? 'Ver resultado 🏁' : 'Próxima →';
 }
 
 function finishQuiz(){
-  const pct=Math.round(score/questoes.length*100);
-  const ring=$('rRing');
-  ring.style.setProperty('--pct',pct);
-  ring.style.background=`conic-gradient(${pct>=80?'var(--ok)':pct>=50?'var(--gold)':'var(--err)'} ${pct}%, #334155 0)`;
-  $('rPct').textContent=pct+'%';
-  $('rMsg').textContent = pct===100?'🏆 Perfeito! Nota máxima!' : pct>=80?'🎉 Excelente! Você domina essa aula.' : pct>=50?'👍 Bom trabalho — revise os erros.' : '📚 Vale revisar a aula e tentar de novo.';
-  $('rStats').textContent=`${score} de ${questoes.length} acertos • melhor sequência: ${bestStreak} 🔥`;
-  $('rBank').textContent=`💰 Prêmios nesta partida: ${sessao} • saldo de ${jogador}: ${getBank(jogador)}`;
-  if(aulaAtual!==null){
-    const b=parseFloat(getBest(aulaAtual));
-    if(!b || pct>b) setBest(aulaAtual,pct);
+  const total = QUIZ.list.length;
+  const acertos = QUIZ.score;
+  const pct = Math.round(acertos / total * 100);
+  const ring = $('rRing');
+  ring.style.background = `conic-gradient(${pct >= 80 ? 'var(--ok)' : pct >= 60 ? 'var(--gold)' : 'var(--err)'} ${pct}%, #334155 0)`;
+  $('rPct').textContent = pct + '%';
+  $('rMsg').textContent = pct === 100 ? '🏆 Perfeito!' : pct >= 80 ? '🎉 Excelente!' : pct >= 60 ? '👍 Bom trabalho!' : '📚 Vale revisar e tentar de novo.';
+  $('rStats').textContent = `${acertos} de ${total} acertos • melhor sequência: ${QUIZ.bestStreak} 🔥`;
+  $('rGold').textContent = `💰 Prêmios desta partida: ${QUIZ.coins} • saldo de ${jogador}: ${getBank(jogador)}`;
+  const ex = $('rExtra'); ex.innerHTML = '';
+  /* desempenho por aula (Seção 15: registrar desempenho para saber onde revisar) */
+  const per = {};
+  QUIZ.log.forEach(l => {
+    if(!per[l.q.aula]) per[l.q.aula] = { ok:0, tot:0 };
+    per[l.q.aula].tot++; if(l.ok) per[l.q.aula].ok++;
+  });
+  const revisar = [];
+  Object.keys(per).map(Number).sort().forEach(n => {
+    const p = per[n];
+    const pctA = Math.round(p.ok / p.tot * 100);
+    const t = DATA.aulas.find(x => x.num === n);
+    const line = document.createElement('div');
+    line.className = 'aula-line';
+    line.innerHTML = `<span>${t.emoji} Aula ${n} — ${t.titulo}</span><b style="color:${pctA >= 70 ? 'var(--ok)' : pctA >= 60 ? 'var(--gold)' : 'var(--err)'}">${pctA}% (${p.ok}/${p.tot})</b>`;
+    ex.appendChild(line);
+    if(pctA < 70) revisar.push(n);
+  });
+  if(revisar.length){
+    const d = document.createElement('div');
+    d.className = 'stats';
+    d.style.marginTop = '8px';
+    d.innerHTML = `📌 Temas para revisar: ${revisar.map(n => 'Aula ' + n).join(', ')}`;
+    ex.appendChild(d);
   }
-  const rv=$('rReview'); rv.innerHTML='';
-  log.forEach((l,i)=>{
-    const d=document.createElement('div');
-    d.className='rev-item';
-    d.innerHTML=`<b class="${l.ok?'ac':'er'}">${l.ok?'✔':'✘'} Q${i+1} (Aula ${l.q.aula})${l.valor?' — +'+l.valor+' 💰':''}:</b> ${l.q.t}<br>
-      Correta: <b>${l.q.o[l.q.c]}</b>${l.ok?'':`<br>Sua escolha: <b class="er">${l.q.o[l.sel]}</b>`}<br><span style="color:var(--muted)">💡 ${l.q.e}</span>`;
+  if(QUIZ.filtro !== null && !Array.isArray(QUIZ.filtro)){
+    const b = parseFloat(getBest(QUIZ.filtro));
+    if(!b || pct > b) setBest(QUIZ.filtro, pct);
+  }
+  const rv = $('rReview'); rv.innerHTML = '';
+  QUIZ.log.forEach((l, i) => {
+    const d = document.createElement('div');
+    d.className = 'rev-item';
+    d.innerHTML = `<b class="${l.ok ? 'ac' : 'er'}">${l.ok ? '✔' : '✘'} Q${l.q.id} (Aula ${l.q.aula})${l.valor ? ' — +' + l.valor + ' 💰' : ''}:</b> ${l.q.t}<br>
+      Correta: <b>${l.q.o[l.q.c]}</b>${l.ok ? '' : `<br>Sua escolha: <b class="er">${l.q.o[l.sel]}</b>`}<br>
+      <span style="color:var(--muted)">💡 ${l.q.e}</span>`;
     rv.appendChild(d);
   });
+  const bt = $('rBtns'); bt.innerHTML = '';
+  QUIZ.after(bt, pct);
   show('result');
 }
 
-$('btnNext').onclick=()=>{ idx++; (idx<questoes.length)?renderQ():finishQuiz(); };
-$('btnQuit').onclick=()=>{ buildQMenu(); show('qMenu'); };
-$('btnAgain').onclick=()=>startQuiz(aulaAtual);
-$('btnMenu').onclick=()=>{ buildQMenu(); show('qMenu'); };
+$('btnNext').onclick = () => {
+  QUIZ.idx++;
+  if(QUIZ.idx < QUIZ.list.length) renderQ(); else finishQuiz();
+};
+$('btnQuit').onclick = () => { (QUIZ.modo === 'missao') ? openMisMenu() : openQMenu(); };
 
-/* ---------- memória ---------- */
-function buildMemMenu(){
-  const g=$('memMenuGrid'); g.innerHTML='';
-  for(const k in TEMAS){
-    const a=TEMAS[k];
-    const d=document.createElement('div');
-    d.className='sel-card nivel-card';
-    d.innerHTML=`<div class="ic">${a.ic}</div><h2>${a.titulo}</h2><small>${a.sub} • ${a.pares.length} pares</small>`;
-    d.onclick=()=>startMem(k);
+/* ================= JOGO 6: MISSÃO SATÉLITE ================= */
+const MIS = [
+  { ic:'📡', t:'Fase 1 — Entenda o sinal', narr:'Tudo começa na energia eletromagnética: entenda como o sinal chega ao sensor.', qs:[1,2,4,7,9] },
+  { ic:'🌍', t:'Fase 2 — Descubra o alvo', narr:'Como a radiação interage com os alvos? É isso que revela o que está na superfície.', qs:[13,17,18,22,24] },
+  { ic:'📷', t:'Fase 3 — Escolha o sensor', narr:'Passivo ou ativo? Whiskbroom ou pushbroom? Escolha o sensor certo para a missão.', qs:[25,26,29,31,35] },
+  { ic:'🔍', t:'Fase 4 — Escolha a resolução', narr:'Espacial, espectral, radiométrica e temporal: decida o que a missão precisa.', qs:[36,37,40,43,47] },
+  { ic:'💾', t:'Fase 5 — Entre na matriz', narr:'Raster, pixels mistos e formatos: organize os dados da missão.', qs:[48,50,51,53,58] },
+  { ic:'☁️', t:'Fase 6 — Atravesse a atmosfera', narr:'Rayleigh, Mie, nuvens e sombras: produza dados utilizáveis.', qs:[59,61,64,68,70] },
+  { ic:'🏆', t:'Desafio final — Mistura de conteúdos', narr:'A entrega final: provar que entende o sinal, o alvo, o sensor, as resoluções, os dados e a atmosfera — e entregar a imagem pronta para análise!', qs:[10,21,32,42,49,67] }
+];
+function misProg(){ return parseInt(localStorage.getItem('qr_mis_' + jogador) || '0', 10); }
+function misUnlock(i){ return i === 0 || misProg() >= i; }
+
+function openMisMenu(){
+  const g = $('misGrid'); g.innerHTML = '';
+  const prog = misProg();
+  MIS.forEach((f, i) => {
+    const d = document.createElement('div');
+    d.className = 'sel-card' + (misUnlock(i) ? '' : ' locked');
+    const passou = prog > i;
+    if(!misUnlock(i)){
+      d.innerHTML = `<div class="ic">🔒</div><h2>${f.t}</h2><small>Complete a fase anterior para liberar.</small>`;
+    } else {
+      d.innerHTML = `<div class="ic">${f.ic}</div><h2>${f.t}</h2><small>${f.narr}</small>
+        ${passou ? `<div class="best done-badge">✔ Concluída</div>` : ''}`;
+      d.onclick = () => startMissao(i);
+    }
     g.appendChild(d);
-  }
-  const m=document.createElement('div');
-  m.className='sel-card nivel-card wide hub-mix';
-  m.innerHTML=`<div class="ic">⭐</div><h2>Modo Misto</h2><small>8 pares sorteados entre todos os temas</small>`;
-  m.onclick=()=>startMem('misto');
-  g.appendChild(m);
+  });
+  const last = document.createElement('div');
+  last.className = 'wide stats';
+  last.innerHTML = prog >= MIS.length
+    ? `<span class="done-badge">🏆 Missão completa! Imagem pronta para análise!</span>`
+    : `Progresso: ${prog} de ${MIS.length} fases concluídas`;
+  g.appendChild(last);
+  show('misMenu');
+}
+function startMissao(i){
+  const fase = MIS[i];
+  const list = shuffle(fase.qs.map(id => DATA.questoes.find(q => q.id === id)));
+  $('qModo').textContent = 'Missão ' + fase.t.replace(' — ', ': ');
+  $('qTotal').textContent = list.length;
+  $('chipVidas').style.display = 'none';
+  QUIZ.modo = 'missao'; QUIZ.list = list; QUIZ.idx = 0; QUIZ.score = 0;
+  QUIZ.streak = 0; QUIZ.bestStreak = 0; QUIZ.coins = 0; QUIZ.log = [];
+  QUIZ.vidas = 99; QUIZ.vidasVis = -1; QUIZ.filtro = null;
+  QUIZ.after = (bt, pct) => {
+    const passou = pct >= 60;
+    if(passou){
+      if(misProg() < i + 1) localStorage.setItem('qr_mis_' + jogador, String(i + 1));
+    }
+    if(i === MIS.length - 1){
+      $('rMsg').textContent = passou
+        ? '🏆 Missão concluída! Você acompanhou o caminho da informação e entregou uma imagem pronta para análise!'
+        : 'Quase lá! Refaça a fase final para concluir a missão.';
+    } else if(passou){
+      const b = document.createElement('button');
+      b.className = 'btn';
+      b.textContent = 'Fase ' + (i + 2) + ' →';
+      b.onclick = () => startMissao(i + 1);
+      bt.appendChild(b);
+    }
+    const b2 = document.createElement('button');
+    b2.className = 'btn btn-ghost';
+    b2.textContent = passou ? '🛰️ Mapa da missão' : '🔁 Refazer fase';
+    b2.onclick = () => { openMisMenu(); };
+    bt.appendChild(b2);
+  };
+  show('game');
+  renderQ();
 }
 
-function startMem(tema){
-  memTema=tema;
-  let pares=[];
-  if(tema==='misto'){
-    const todos=[];
-    for(const k in TEMAS){ TEMAS[k].pares.forEach(p=>todos.push({...p, tema:k})); }
-    pares=shuffle(todos).slice(0,8);
-  } else {
-    pares=shuffle(TEMAS[tema].pares.map(p=>({...p})));
-  }
-  /* cada par gera DUAS cartas diferentes: uma visual (emoji/quadro da banda)
-     e uma textual (conceito) — elas se encaixam como imagem + conceito */
-  memCards=[];
-  pares.forEach((p,i)=>{
-    memCards.push({face:p.face, id:i});
-    memCards.push({face:p.par,  id:i});
+/* ================= JOGO 2: MEMÓRIA ================= */
+const MEM = { cards:[], flip:[], lock:false, mat:0, moves:0, coins:0, timer:null, secs:0, n:0 };
+function startMem(){
+  const pares = shuffle(DATA.memoria).slice(0, 12);
+  MEM.n = pares.length; MEM.mat = 0; MEM.moves = 0; MEM.coins = 0; MEM.secs = 0;
+  MEM.lock = false; MEM.flip = [];
+  MEM.cards = [];
+  pares.forEach((p, i) => {
+    MEM.cards.push({ id:i, face:{ t:'term', e:p.e, h:p.a } });
+    MEM.cards.push({ id:i, face:{ t:'def', h:p.b } });
   });
-  memCards=shuffle(memCards);
-  memMatched=0; memMoves=0; memCoins=0; memSecs=0; memLock=false; memFlipped=[];
-  $('mTema').textContent = tema==='misto' ? 'Misto ⭐' : TEMAS[tema].titulo;
-  $('mTotal').textContent = pares.length;
-  $('mPares').textContent = 0;
-  $('mMoves').textContent = 0;
-  $('mCoins').textContent = 0;
-  $('mTime').textContent = '0s';
-  clearInterval(memTimer);
-  memTimer=setInterval(()=>{ memSecs++; $('mTime').textContent=memSecs+'s'; },1000);
+  MEM.cards = shuffle(MEM.cards);
+  $('mTotal').textContent = MEM.n;
+  $('mPares').textContent = 0; $('mMoves').textContent = 0;
+  $('mCoins').textContent = 0; $('mTime').textContent = '0s';
+  clearInterval(MEM.timer);
+  MEM.timer = setInterval(() => { MEM.secs++; $('mTime').textContent = MEM.secs + 's'; }, 1000);
   renderBoard();
   show('memGame');
 }
-
 function faceHTML(f){
-  if(f.t==='emo') return `<div class="emo">${f.v}</div>`;
-  if(f.t==='swatch') return `<div class="swatch" style="background:${f.c}">${f.l}</div>`;
-  if(f.t==='txt') return `<div class="txt">${f.h}</div><div class="sub">${f.s}</div>`;
+  if(f.t === 'term') return `<div class="eico">${f.e}</div><div class="txt">${f.h}</div>`;
+  if(f.t === 'def') return `<div class="def">“${f.h}”</div>`;
   return '';
 }
 function renderBoard(){
-  const b=$('board'); b.innerHTML='';
-  memCards.forEach((c,i)=>{
-    const d=document.createElement('div');
-    d.className='mcard';
-    d.dataset.i=i;
-    d.innerHTML=`<div class="mcard-inner">
+  const b = $('board'); b.innerHTML = '';
+  MEM.cards.forEach((c, i) => {
+    const d = document.createElement('div');
+    d.className = 'mcard';
+    d.innerHTML = `<div class="mcard-inner">
       <div class="mface mface-back">❓</div>
       <div class="mface mface-front">${faceHTML(c.face)}</div>
     </div>`;
-    d.onclick=()=>flipCard(i,d);
+    d.onclick = () => flipM(i, d);
     b.appendChild(d);
   });
 }
-
-function flipCard(i,el){
-  if(memLock || el.classList.contains('flip')) return;
+function flipM(i, el){
+  if(MEM.lock || el.classList.contains('flip')) return;
   el.classList.add('flip');
-  memFlipped.push({i, el, id:memCards[i].id});
-  if(memFlipped.length===2){
-    memMoves++; $('mMoves').textContent=memMoves;
-    const [a,b]=memFlipped;
-    if(a.id===b.id){
-      setTimeout(()=>{
-        [a,b].forEach(x=>{
+  MEM.flip.push({ i, el, id:MEM.cards[i].id });
+  if(MEM.flip.length === 2){
+    MEM.moves++; $('mMoves').textContent = MEM.moves;
+    const [a, b] = MEM.flip;
+    if(a.id === b.id){
+      setTimeout(() => {
+        [a, b].forEach(x => {
           x.el.querySelector('.mface-front').classList.add('matched');
           x.el.classList.add('matchdone');
         });
-        memMatched++; memCoins+=15;
-        $('mPares').textContent=memMatched;
-        $('mCoins').textContent=memCoins;
-        setBank(jogador, getBank(jogador)+15);
-        const p=document.createElement('div');
-        p.className='prize-pop';
-        p.textContent='+15 💰';
-        document.body.appendChild(p);
-        setTimeout(()=>p.remove(),1000);
-        memFlipped=[]; memLock=false;
-        if(memMatched===parseInt($('mTotal').textContent,10)) winMem();
-      },350);
+        MEM.mat++; MEM.coins += addCoins(15);
+        $('mPares').textContent = MEM.mat;
+        $('mCoins').textContent = MEM.coins;
+        MEM.flip = []; MEM.lock = false;
+        if(MEM.mat === MEM.n) endMem();
+      }, 350);
     } else {
-      memLock=true;
-      setTimeout(()=>{
-        [a,b].forEach(x=>x.el.classList.remove('flip'));
-        memFlipped=[]; memLock=false;
-      },750);
+      MEM.lock = true;
+      setTimeout(() => {
+        [a, b].forEach(x => x.el.classList.remove('flip'));
+        MEM.flip = []; MEM.lock = false;
+      }, 750);
     }
   }
 }
-
-function winMem(){
-  clearInterval(memTimer);
-  const bonus=Math.max(0, 30-(memMoves-memMatched)*5);
-  setBank(jogador, getBank(jogador)+bonus);
-  $('wTitle').textContent = memMoves===memMatched ? 'PERFEITO! Nenhum erro! 🌟' : 'Você achou todos os pares!';
-  $('wStats').textContent = `Pares: ${memMatched} • Tentativas: ${memMoves} • Tempo: ${memSecs}s`;
-  $('wCoins').textContent = `💰 Partida: ${memCoins} + bônus de precisão: ${bonus} • saldo total: ${getBank(jogador)}`;
-  show('memWin');
+function endMem(){
+  clearInterval(MEM.timer);
+  const bonus = Math.max(0, 30 - (MEM.moves - MEM.n) * 5);
+  addCoins(bonus);
+  showEnd({
+    icon:'🏆',
+    title: MEM.moves === MEM.n ? 'PERFEITO! Nenhum erro! 🌟' : 'Você achou todos os pares!',
+    stats:`Pares: ${MEM.n} • Tentativas: ${MEM.moves} • Tempo: ${MEM.secs}s`,
+    gold:`💰 Partida: ${MEM.coins} (bônus de precisão incluído) • saldo: ${getBank(jogador)}`,
+    buttons:[
+      { label:'🔁 Jogar de novo', fn:() => startMem() },
+      { label:'🏠 Início', ghost:true, fn:openHub }
+    ]
+  });
 }
 
-$('btnMemAgain').onclick=()=>startMem(memTema);
-$('btnMemMenu').onclick=()=>{ clearInterval(memTimer); buildMemMenu(); show('memMenu'); };
-$('btnMemQuit').onclick=()=>{ clearInterval(memTimer); buildMemMenu(); show('memMenu'); };
+/* ================= JOGO 3: RELACIONE ================= */
+const REL = { rodada:null, sel:null, ok:0, err:0, coins:0, total:0, cardEls:{}, destEls:{} };
+function openRelMenu(){
+  const g = $('relMenuGrid'); g.innerHTML = '';
+  DATA.relacione.forEach((r, i) => {
+    const d = document.createElement('div');
+    d.className = 'sel-card';
+    d.innerHTML = `<span class="sel-num">Rodada ${'ABCD'[i]}</span>
+      <h2>${r.t}</h2><small>${r.itens.length} itens</small>`;
+    d.onclick = () => startRel(i);
+    g.appendChild(d);
+  });
+  show('relMenu');
+}
+function startRel(k){
+  const r = DATA.relacione[k];
+  REL.ok = 0; REL.err = 0; REL.coins = 0; REL.sel = null; REL.total = r.itens.length;
+  REL.rodada = r;
+  $('relRod').textContent = 'Rodada ' + 'ABCD'[k] + ' — ' + r.t;
+  $('relTot').textContent = REL.total;
+  $('relOk').textContent = 0; $('relErr').textContent = 0; $('relCoins').textContent = 0;
+  const cc = $('relCards'); cc.innerHTML = '';
+  REL.cardEls = {}; REL.destEls = {};
+  shuffle(r.itens.map((it, i) => ({ i, a:it[0] }))).forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'rel-card';
+    d.textContent = c.a;
+    d.onclick = () => {
+      if(d.classList.contains('placed')) return;
+      document.querySelectorAll('#relCards .rel-card').forEach(x => x.classList.remove('sel'));
+      if(REL.sel === c.i){ REL.sel = null; return; }
+      d.classList.add('sel'); REL.sel = c.i;
+    };
+    REL.cardEls[c.i] = d;
+    cc.appendChild(d);
+  });
+  const cd = $('relDests'); cd.innerHTML = '';
+  shuffle(r.itens.map((it, i) => ({ i, b:it[1] }))).forEach(dst => {
+    const b = document.createElement('button');
+    b.className = 'rel-dest';
+    b.textContent = dst.b;
+    b.onclick = () => relDrop(dst.i, b);
+    REL.destEls[dst.i] = b;
+    cd.appendChild(b);
+  });
+  show('relGame');
+}
+/* arrastar: solta o cartão sobre o destino */
+function relDrop(idx, el){
+  if(el.disabled || el.classList.contains('ok')) return;
+  if(REL.sel === null) return;
+  if(REL.sel === idx){
+    el.classList.add('ok');
+    el.disabled = true;
+    el.innerHTML = '✔ <b>' + REL.rodada.itens[idx][0] + '</b> → ' + REL.rodada.itens[idx][1];
+    REL.cardEls[idx].classList.add('placed');
+    REL.cardEls[idx].classList.remove('sel');
+    REL.sel = null;
+    REL.ok++;
+    REL.coins += addCoins(10);
+    $('relOk').textContent = REL.ok;
+    $('relCoins').textContent = REL.coins;
+    if(REL.ok === REL.total){
+      setTimeout(() => {
+        showEnd({
+          icon:'🧩', title:'Rodada completa!',
+          stats:`Todos os ${REL.total} cartões encaixados • erros de seleção: ${REL.err}`,
+          gold:`💰 Partida: ${REL.coins} • saldo: ${getBank(jogador)}`,
+          buttons:[
+            { label:'🔁 Jogar de novo', fn:() => startRel(DATA.relacione.indexOf(REL.rodada)) },
+            { label:'Escolher rodada', ghost:true, fn:openRelMenu },
+            { label:'🏠 Início', ghost:true, fn:openHub }
+          ]
+        });
+      }, 500);
+    }
+  } else {
+    REL.err++;
+    $('relErr').textContent = REL.err;
+    el.classList.add('bad');
+    setTimeout(() => el.classList.remove('bad'), 350);
+  }
+}
 
-/* =========================================================
-   6) FLUXO DE ENTRADA  */
+/* ================= JOGO 4: QUEM SOU EU ================= */
+const QUEM = { list:[], i:0, hint:0, coins:0, answered:false };
+const QUEM_VAL = [30, 20, 10]; // prêmio por nº de pistas usadas (0, 1, 2…)
+function startQuem(){
+  QUEM.list = shuffle(DATA.quem.map(q => q.r)).slice(0, 6);
+  QUEM.i = 0; QUEM.coins = 0;
+  $('quemTot').textContent = QUEM.list.length;
+  $('quemCoins').textContent = 0;
+  show('quemScr');
+  nextQuem();
+}
+function nextQuem(){
+  QUEM.i++; QUEM.hint = 0; QUEM.answered = false;
+  if(QUEM.i > QUEM.list.length){ endQuem(); return; }
+  const r = DATA.quem.find(q => q.r === QUEM.list[QUEM.i - 1]);
+  const x = DATA.qextras[r.r] || {};
+  const pistas = [r.pista].concat([x.p2, x.p3].filter(Boolean));
+  $('quemNum').textContent = QUEM.i;
+  $('quemHints').innerHTML = '';
+  const li = document.createElement('li');
+  li.innerHTML = `<em>Pista 1:</em> ${pistas[0]}`;
+  $('quemHints').appendChild(li);
+  $('btnHint').style.display = pistas.length > 1 ? '' : 'none';
+  $('btnHint').onclick = () => {
+    if(QUEM.hint >= pistas.length - 1 || QUEM.answered) return;
+    QUEM.hint++;
+    const li = document.createElement('li');
+    li.innerHTML = `<em>Pista ${QUEM.hint + 1}:</em> ${pistas[QUEM.hint]}`;
+    $('quemHints').appendChild(li);
+    if(QUEM.hint >= pistas.length - 1) $('btnHint').style.display = 'none';
+  };
+  $('quemFb').className = 'feedback';
+  $('quemFb').innerHTML = '';
+  $('btnQuemNext').style.display = 'none';
+  const erradas = shuffle(DATA.quem.filter(q => q.r !== r.r).map(q => q.r)).slice(0, 3);
+  const opts = shuffle([r.r].concat(erradas));
+  const box = $('quemOpts'); box.innerHTML = '';
+  opts.forEach(o => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="letter">•</span><span>${o}</span>`;
+    b.onclick = () => answerQuem(o, b, r);
+    box.appendChild(b);
+  });
+  QUEM.val = QUEM_VAL[Math.min(QUEM.hint, 2)];
+}
+function answerQuem(o, btn, r){
+  if(QUEM.answered) return;
+  QUEM.answered = true;
+  const ok = o === r.r;
+  let valor = 0;
+  if(ok) valor = addCoins(QUEM_VAL[Math.min(QUEM.hint, 2)]); // menos pistas = mais prêmio
+  document.querySelectorAll('#quemOpts .opt').forEach(b => {
+    b.disabled = true;
+    if(b.textContent.includes(r.r)) b.classList.add('correct');
+    else if(b === btn && !ok) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const fb = $('quemFb');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+  fb.innerHTML = `<div class="verdict">${ok ? '✅ É ' + r.r + '!' : '❌ Não é essa — a resposta é: ' + r.r}</div>
+    <div>💡 ${x.exp || r.pista}</div>` + (ok ? `<div class="prize">Prêmio: +${valor} 💰 (com ${QUEM.hint} pista(s) revelada(s))</div>` : '');
+  if(ok){ QUEM.coins += valor; $('quemCoins').textContent = QUEM.coins; }
+  $('btnQuemNext').style.display = 'inline-block';
+}
+/* QUEM.val não é mais usado (prêmio calculado na hora da resposta) */
+$('btnQuemNext').onclick = nextQuem;
+function endQuem(){
+  showEnd({
+    icon:'🕵️', title:'Fim do Quem sou eu!',
+    stats:`${QUEM.list.length} conceitos revisados`,
+    gold:`💰 Partida: ${QUEM.coins} • saldo: ${getBank(jogador)}`,
+    buttons:[
+      { label:'🔁 Jogar de novo', fn:() => startQuem() },
+      { label:'🏠 Início', ghost:true, fn:openHub }
+    ]
+  });
+}
+
+/* ================= JOGO 7: V/F COMBO ================= */
+const VF = { list:[], i:0, ok:0, combo:0, bestCombo:0, coins:0 };
+function startVf(){
+  VF.list = shuffle(DATA.vf).slice(0, 10);
+  VF.i = 0; VF.ok = 0; VF.combo = 0; VF.bestCombo = 0; VF.coins = 0;
+  $('vfTot').textContent = VF.list.length;
+  $('vfCoins').textContent = 0; $('vfCombo').textContent = 0;
+  show('vfScr');
+  renderVf();
+}
+function renderVf(){
+  const v = VF.list[VF.i];
+  $('vfNum').textContent = VF.i + 1;
+  $('vfBar').style.width = (VF.i / VF.list.length * 100) + '%';
+  $('vfFrase').textContent = '“' + v.f + '”';
+  $('vfFb').className = 'feedback';
+  $('vfFb').innerHTML = '';
+  $('btnVfNext').style.display = 'none';
+  $('btnTrue').disabled = false; $('btnFalse').disabled = false;
+}
+function vfAnswer(cho){
+  const v = VF.list[VF.i];
+  const ok = cho === v.v;
+  $('btnTrue').disabled = true; $('btnFalse').disabled = true;
+  let valor = 0;
+  if(ok){
+    VF.ok++; VF.combo++; VF.bestCombo = Math.max(VF.bestCombo, VF.combo);
+    valor = 10 + (VF.combo - 1) * 5; // prêmio cresce com o combo
+    VF.coins += addCoins(valor);
+  } else { VF.combo = 0; }
+  $('vfCombo').textContent = VF.combo;
+  $('vfCoins').textContent = VF.coins;
+  const fb = $('vfFb');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+  fb.innerHTML = `<div class="verdict">${ok ? '✅ Correto!' : '❌ Incorreto — a afirmação é ' + (v.v ? 'VERDADEIRA' : 'FALSA') + '.'}</div>
+    <div>💡 ${v.e}</div>` +
+    (ok ? `<div class="prize">Prêmio: +${valor} 💰 (combo x${VF.combo})</div>` : VF.combo === 0 ? '<div class="verdict" style="color:var(--gold)">💔 O combo zerou! Comece de novo…</div>' : '');
+  $('btnVfNext').textContent = VF.i === VF.list.length - 1 ? 'Ver resultado 🏁' : 'Próxima →';
+  $('btnVfNext').style.display = 'inline-block';
+}
+$('btnTrue').onclick = () => vfAnswer(true);
+$('btnFalse').onclick = () => vfAnswer(false);
+$('btnVfNext').onclick = () => {
+  VF.i++;
+  if(VF.i < VF.list.length) renderVf(); else endVf();
+};
+function endVf(){
+  showEnd({
+    icon:'✅', title:'Fim do Verdadeiro ou Falso!',
+    stats:`${VF.ok} de ${VF.list.length} acertos • melhor combo: ${VF.bestCombo} 🔥`,
+    gold:`💰 Partida: ${VF.coins} • saldo: ${getBank(jogador)}`,
+    buttons:[
+      { label:'🔁 Jogar de novo', fn:() => startVf() },
+      { label:'🏠 Início', ghost:true, fn:openHub }
+    ]
+  });
+}
+
+/* ================= JOGO 5: DETETIVE DO ERRO ================= */
+const DET = { list:[], i:0, ok:0, coins:0 };
+function startDet(){
+  DET.list = shuffle(DATA.detetive).slice(0, 8);
+  DET.i = 0; DET.ok = 0; DET.coins = 0;
+  $('detTot').textContent = 8;
+  $('detCoins').textContent = 0; $('detOk').textContent = 0;
+  show('detScr');
+  renderDet();
+}
+function renderDet(){
+  const c = DET.list[DET.i];
+  $('detNum').textContent = DET.i + 1;
+  $('detFrase').textContent = '“' + c.frase + '”';
+  $('detFb').className = 'feedback';
+  $('detFb').innerHTML = '';
+  $('btnDetNext').style.display = 'none';
+  $('btnDetErr').disabled = false; $('btnDetOk').disabled = false;
+}
+function detAnswer(cho){
+  const c = DET.list[DET.i];
+  const ok = cho === 'erro'; // todos os casos do banco contêm erros conceituais
+  $('btnDetErr').disabled = true; $('btnDetOk').disabled = true;
+  let valor = 0;
+  if(ok){
+    DET.ok++;
+    DET.coins += addCoins(15);
+  }
+  $('detOk').textContent = DET.ok;
+  $('detCoins').textContent = DET.coins;
+  const fb = $('detFb');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+  fb.innerHTML = `<div class="verdict">${ok ? '🚩 Bem visto — a frase contém um erro conceitual!' : '❌ A frase PARECE correta, mas contém um erro!'}</div>
+    <div>💡 ${c.erro}</div>` + (ok ? `<div class="prize">Prêmio: +15 💰</div>` : '');
+  $('btnDetNext').textContent = DET.i === DET.list.length - 1 ? 'Ver resultado 🏁' : 'Próximo caso →';
+  $('btnDetNext').style.display = 'inline-block';
+}
+$('btnDetErr').onclick = () => detAnswer('erro');
+$('btnDetOk').onclick = () => detAnswer('correta');
+$('btnDetNext').onclick = () => {
+  DET.i++;
+  if(DET.i < DET.list.length) renderDet(); else endDet();
+};
+function endDet(){
+  showEnd({
+    icon:'🔎', title:'Fim do Detetive do erro!',
+    stats:`${DET.ok} de ${DET.list.length} casos resolvidos`,
+    gold:`💰 Partida: ${DET.coins} • saldo: ${getBank(jogador)}`,
+    buttons:[
+      { label:'🔁 Novos casos', fn:() => startDet() },
+      { label:'🏠 Início', ghost:true, fn:openHub }
+    ]
+  });
+}
+
+/* ================= JOGO 8: CLASSIFIQUE ================= */
+const CLAS = { queue:[], i:0, ok:0, err:0, coins:0, total:0 };
+function startClas(){
+  const items = [];
+  DATA.classif.forEach((cat, ci) => {
+    cat.cartoes.forEach(lab => items.push({ ci, lab }));
+  });
+  CLAS.queue = shuffle(items);
+  CLAS.total = items.length;
+  CLAS.ok = 0; CLAS.err = 0; CLAS.coins = 0; CLAS.i = 0; CLAS.busy = false;
+  $('clasTot').textContent = CLAS.total;
+  $('clasErr').textContent = 0; $('clasCoins').textContent = 0;
+  buildClasCats();
+  show('clasScr');
+  renderClas();
+}
+function buildClasCats(){
+  const g = $('clasCats'); g.innerHTML = '';
+  DATA.classif.forEach((cat, ci) => {
+    const b = document.createElement('button');
+    b.className = 'cat-btn';
+    b.textContent = cat.cat;
+    b.onclick = () => clasPick(ci, b);
+    g.appendChild(b);
+  });
+}
+function renderClas(){
+  const it = CLAS.queue[CLAS.i];
+  $('clasNum').textContent = CLAS.i + 1;
+  $('clasCard').textContent = it.lab;
+  $('clasFb').className = 'feedback';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('bad'));
+}
+function clasPick(ci, btn){
+  const it = CLAS.queue[CLAS.i];
+  if(CLAS.busy) return;
+  if(ci === it.ci){
+    CLAS.busy = true;
+    CLAS.ok++;
+    CLAS.coins += addCoins(10);
+    $('clasCoins').textContent = CLAS.coins;
+    $('clasFb').className = 'feedback show ok';
+    $('clasFb').innerHTML = `<div class="verdict">✔ ${it.lab} → ${DATA.classif[ci].cat}</div><div>💰 +10</div>`;
+    CLAS.i++;
+    if(CLAS.i >= CLAS.queue.length){ setTimeout(endClas, 500); return; }
+    setTimeout(() => {
+      CLAS.busy = false;
+      renderClas();
+      $('clasFb').className = 'feedback';
+      $('clasFb').innerHTML = '';
+    }, 500);
+  } else {
+    CLAS.err++;
+    $('clasErr').textContent = CLAS.err;
+    btn.classList.add('bad');
+    // o cartão errado volta ao fim da fila para tentar de novo
+    const c = CLAS.queue.splice(CLAS.i, 1)[0];
+    CLAS.queue.push(c);
+    $('clasFb').className = 'feedback show err';
+    $('clasFb').innerHTML = `<div class="verdict">❌ Não pertence a ${DATA.classif[ci].cat}.</div><div>💡 O cartão voltou ao fim da fila — tente outra categoria.</div>`;
+  }
+}
+function endClas(){
+  showEnd({
+    icon:'🗂️', title:'Tudo classificado!',
+    stats:`${CLAS.total} cartões • seleções erradas: ${CLAS.err}`,
+    gold:`💰 Partida: ${CLAS.coins} • saldo: ${getBank(jogador)}`,
+    buttons:[
+      { label:'🔁 Jogar de novo', fn:() => startClas() },
+      { label:'🏠 Início', ghost:true, fn:openHub }
+    ]
+  });
+}
+
+/* ================= tela de fim genérica ================= */
+function showEnd(cfg){
+  $('eIcon').textContent = cfg.icon || '🏁';
+  $('eTitle').textContent = cfg.title || '';
+  $('eStats').textContent = cfg.stats || '';
+  $('eGold').textContent = cfg.gold || '';
+  const b = $('eBtns'); b.innerHTML = '';
+  (cfg.buttons || []).forEach(bt => {
+    const el = document.createElement('button');
+    el.className = 'btn' + (bt.ghost ? ' btn-ghost' : '');
+    el.textContent = bt.label;
+    el.onclick = bt.fn;
+    b.appendChild(el);
+  });
+  show('endScr');
+}
+
+/* ================= fluxo ================= */
 function enterSite(){
-  const n=$('nameInput').value.trim();
+  const n = $('nameInput').value.trim();
   if(!n){ $('nameInput').focus(); return; }
-  jogador=n;
-  localStorage.setItem('qr_player',jogador);
+  jogador = n;
+  localStorage.setItem('qr_player', jogador);
+  buildHub();
   openHub();
 }
-$('btnName').onclick=enterSite;
-$('nameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') enterSite(); });
-$('btnChangeName').onclick=()=>{
+$('btnName').onclick = enterSite;
+$('nameInput').addEventListener('keydown', e => { if(e.key === 'Enter') enterSite(); });
+$('btnChangeName').onclick = () => {
   if(confirm('Trocar de jogador? O saldo atual fica salvo neste nome.')){
-    $('nameInput').value='';
-    show('nameScreen');
+    $('nameInput').value = '';
+    show('nameScr');
   }
 };
-document.querySelectorAll('.btnHub').forEach(b=>b.onclick=openHub);
+document.querySelectorAll('.btnHub').forEach(b => b.onclick = () => { clearInterval(MEM.timer); buildHub(); openHub(); });
+$('btnMemQuit').onclick = () => { clearInterval(MEM.timer); openHub(); };
+$('btnRelQuit').onclick = () => { openHub(); };
+$('btnQuemQuit').onclick = () => { openHub(); };
+$('btnVfQuit').onclick = () => { openHub(); };
+$('btnDetQuit').onclick = () => { openHub(); };
+$('btnClasQuit').onclick = () => { openHub(); };
 
-/* jogador salvo? entra direto; senão, tela de nome */
-jogador = localStorage.getItem('qr_player')||'';
+jogador = localStorage.getItem('qr_player') || '';
 if(jogador){
-  $('nameInput').value=jogador;
+  $('nameInput').value = jogador;
+  buildHub();
   openHub();
 }
 </script>
