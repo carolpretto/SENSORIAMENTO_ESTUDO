@@ -22,8 +22,30 @@
   header h1 span{color:var(--accent);}
   header p{color:var(--muted); margin-top:6px; font-size:.95rem;}
 
+  /* ---------- tela de nome ---------- */
+  .name-card{
+    max-width:460px; margin:40px auto; background:var(--card); border:1px solid #334155;
+    border-radius:16px; padding:34px 28px; text-align:center;
+  }
+  .name-card h2{margin-bottom:6px;}
+  .name-card p{color:var(--muted); font-size:.9rem; margin-bottom:18px;}
+  .name-card input{
+    width:100%; background:var(--card2); border:2px solid #334155; border-radius:10px;
+    padding:12px 14px; color:var(--text); font-size:1rem; text-align:center; margin-bottom:14px;
+  }
+  .name-card input:focus{outline:none; border-color:var(--accent);}
+
   /* ---------- seleção de aulas ---------- */
   .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .player-bar{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    background:var(--card); border:1px solid #334155; border-radius:14px;
+    padding:14px 18px; margin-bottom:16px;
+  }
+  .player-bar .who{font-size:1rem;}
+  .player-bar .who b{color:var(--accent); font-size:1.1rem;}
+  .player-bar .bank{color:var(--gold); font-weight:700;}
+  .player-row{display:flex; gap:10px;}
   .aula-card{
     background:var(--card); border:1px solid #334155; border-radius:14px;
     padding:18px; cursor:pointer; transition:.18s; position:relative; overflow:hidden;
@@ -78,6 +100,13 @@
   .feedback .verdict{font-weight:700; font-size:1.05rem; margin-bottom:6px;}
   .feedback.ok .verdict{color:var(--ok);}
   .feedback.err .verdict{color:var(--err);}
+  .feedback .prize{color:var(--gold); font-weight:700; margin-top:6px;}
+  .prize-pop{
+    position:fixed; top:30%; left:50%; transform:translateX(-50%);
+    color:var(--gold); font-size:2rem; font-weight:800; pointer-events:none;
+    animation:pop 1s forwards; z-index:50; text-shadow:0 2px 10px rgba(0,0,0,.6);
+  }
+  @keyframes pop{0%{opacity:0; transform:translate(-50%,10px) scale(.6);} 20%{opacity:1; transform:translate(-50%,-6px) scale(1.15);} 100%{opacity:0; transform:translate(-50%,-40px) scale(1);}}
   .btn{
     display:inline-block; background:var(--accent); color:#0f172a; font-weight:700; border:none;
     border-radius:10px; padding:12px 26px; font-size:1rem; cursor:pointer; transition:.15s;
@@ -100,6 +129,7 @@
   .score-ring .lbl{font-size:.75rem; color:var(--muted);}
   .msg{font-size:1.15rem; margin-bottom:6px;}
   .stats{color:var(--muted); margin-bottom:20px;}
+  .stats .gold{color:var(--gold); font-weight:700;}
   .review{text-align:left; margin-top:22px;}
   .review h3{margin-bottom:10px; font-size:1rem;}
   .rev-item{background:var(--card2); border-radius:10px; padding:12px 14px; margin-bottom:8px; font-size:.9rem; line-height:1.45;}
@@ -114,11 +144,28 @@
 <div class="container">
   <header>
     <h1>🛰️ Quiz de <span>Sensoriamento Remoto</span></h1>
-    <p>Escolha uma aula para testar seus conhecimentos — resposta e explicação aparecem após cada seleção.</p>
+    <p>Escolha uma aula para testar seus conhecimentos — a resposta e a explicação aparecem após cada seleção.</p>
   </header>
 
+  <!-- TELA: nome -->
+  <section id="nameScreen" class="screen">
+    <div class="name-card">
+      <h2>👤 Quem vai jogar?</h2>
+      <p>Digite seu nome para começar a acumular prêmios 💰</p>
+      <input type="text" id="nameInput" maxlength="20" placeholder="Seu nome">
+      <button class="btn" id="btnName">Começar ▶</button>
+    </div>
+  </section>
+
   <!-- TELA: menu -->
-  <section id="menu" class="screen active">
+  <section id="menu" class="screen">
+    <div class="player-bar">
+      <div class="who">👤 <b id="pName"></b></div>
+      <div class="bank">💰 Prêmios acumulados: <span id="pBank">0</span></div>
+      <div class="player-row">
+        <button class="btn btn-ghost" id="btnChangeName" style="padding:8px 16px; font-size:.85rem;">Trocar jogador</button>
+      </div>
+    </div>
     <div class="grid" id="menuGrid"></div>
   </section>
 
@@ -129,6 +176,7 @@
       <div class="chip">Questão <b id="qNum"></b>/<span id="qTotal"></span></div>
       <div class="chip">Acertos: <b id="qScore">0</b></div>
       <div class="chip streak">🔥 Sequência: <b id="qStreak">0</b></div>
+      <div class="chip streak">💰 <b id="qBank">0</b></div>
     </div>
     <div class="bar"><div id="qBar"></div></div>
     <div class="q-card">
@@ -152,6 +200,7 @@
       </div>
       <div class="msg" id="rMsg"></div>
       <div class="stats" id="rStats"></div>
+      <div class="stats gold" id="rBank"></div>
       <button class="btn" id="btnAgain">🔁 Jogar de novo</button>&nbsp;
       <button class="btn btn-ghost" id="btnMenu">🏠 Menu</button>
       <div class="review">
@@ -165,7 +214,10 @@
 </div>
 
 <script>
-/* ================== BANCO DE QUESTÕES ================== */
+/* ================== BANCO DE QUESTÕES ==================
+   Toda questão é gravada com a resposta correta na posição 0 (c:0).
+   Na hora de mostrar, as alternativas são embaralhadas na tela,
+   então a posição da correta muda a cada partida. */
 const AULAS = [
 {
   num:1, titulo:"O que é Sensoriamento Remoto?", emoji:"🌍",
@@ -177,7 +229,7 @@ const AULAS = [
        "Medir a temperatura de um solo com termômetro enfiado na terra",
        "Contar plantas de uma plantação andando entre elas"],
     c:0,
-    e:"Sensoriamento remoto é obter informações de um alvo à distância, sem contato físico — como o nome diz, 'sentir de longe'. As medições em contato direto (termômetro no solo, lab) não são sensoriamento remoto."
+    e:"Sensoriamento remoto é obter informações de um alvo à distância, sem contato físico — como o nome diz, 'sentir de longe'. Medições em contato direto (termômetro no solo, laboratório) não são sensoriamento remoto."
   },
   {
     t:"Como é possível 'ver' objetos da Terra a partir de um satélite, sem tocá-los?",
@@ -213,7 +265,7 @@ const AULAS = [
        "Um agrônomo medindo a profundidade do solo com uma régua",
        "Um pedreiro conferindo a espessura de uma parede com trena"],
     c:0,
-    e:"A câmera do drone é um sensor instalado numa plataforma, captando informação à distância. Nos outros exemplos, há contato direto com o objeto — não é sensoriamento remoto."
+    e:"A câmera do drone é um sensor instalado numa plataforma, captando informação à distância. Nos outros exemplos há contato direto com o objeto — não é sensoriamento remoto."
   },
   {
     t:"O que é um satélite artificial?",
@@ -222,7 +274,16 @@ const AULAS = [
        "Um radar instalado no solo",
        "Um computador que armazena as imagens"],
     c:0,
-    e:"O satélite artificial é uma plataforma colocada em órbita pela humanidade. Ele gira em volta da Terra e, na maior parte dos casos de sensoriamento remoto, leva sensores a bordo."
+    e:"O satélite artificial é uma plataforma colocada em órbita pela humanidade. Ele gira em volta da Terra e, nos casos de sensoriamento remoto, leva sensores a bordo."
+  },
+  {
+    t:"O que é o ALVO na linguagem de sensoriamento remoto?",
+    o:["O objeto ou área que queremos observar na superfície (água, vegetação, solo, cidade)",
+       "O computador que guarda as imagens",
+       "O satélite em órbita",
+       "A agência espacial que lança o satélite"],
+    c:0,
+    e:"Alvo é o que se quer 'enxergar': uma área de floresta, um rio, um solo, uma cidade, uma plantação. O sensor é apontado para o alvo e registra a radiação que chega dele."
   },
   {
     t:"O satélite Landsat é famoso na história do sensoriamento remoto porque foi:",
@@ -231,7 +292,43 @@ const AULAS = [
        "O satélite que levou o primeiro rádio ao espaço",
        "O primeiro satélite construído por um país europeu"],
     c:0,
-    e:"Antes do Landsat só havia os satélites meteorológicos como o TIROS-1. O Landsat 1 (1972) inaugurou o sensoriamento remoto orbital dedicado aos recursos terrestres, e sua série segue em operação até hoje."
+    e:"Antes do Landsat só havia os satélites meteorológicos, como o TIROS-1. O Landsat 1 (1972) inaugurou o sensoriamento remoto orbital dedicado aos recursos terrestres, e sua série segue em operação até hoje."
+  },
+  {
+    t:"Qual foi o TIROS-1 (1960) na história do sensoriamento remoto?",
+    o:["O marco inicial dos satélites em órbita — um satélite meteorológico",
+       "O primeiro satélite do Brasil",
+       "O primeiro avião de fotos aéreas",
+       "Um computador que processava imagens na década de 1960"],
+    c:0,
+    e:"O TIROS-1 (1960) foi o marco inicial dos satélites em órbita, dedicado ao clima (meteorologia). Depois dele veio o Landsat 1 (1972), que começou a observação da superfície terrestre."
+  },
+  {
+    t:"Qual é a principal diferença entre um sensor em AVIÃO e um sensor em SATÉLITE?",
+    o:["O avião imagea uma área menor com mais detalhe; o satélite cobre áreas enormes repetidamente",
+       "O avião voa mais alto que o satélite",
+       "O satélite toca o terreno e o avião não",
+       "Não há diferença: os dois capturam exatamente as mesmas cenas"],
+    c:0,
+    e:"Por voar mais perto do chão, o avião (ou drone) captura áreas menores com mais detalhe. O satélite, em órbita, cobre áreas muito grandes e repassa com frequência nas mesmas regiões."
+  },
+  {
+    t:"Qual dessas aplicações é típica de sensoriamento remoto?",
+    o:["Mapear o desmatamento na Amazônia usando imagens de satélite",
+       "Contar os ovos de um ninho de pássaros, olhando de perto",
+       "Provar a idade de uma rocha em laboratório",
+       "Medir a altura de uma parede com metro"],
+    c:0,
+    e:"O sensoriamento remoto é muito usado para monitorar a superfície da Terra: desmatamento, queimadas, crescimento de cidades, rios e agricultura — sempre olhando de longe, pelas imagens."
+  },
+  {
+    t:"O que o sensor registra dos objetos da superfície?",
+    o:["Como cada objeto reflete a radiação que recebe (seu comportamento espectral)",
+       "O cheiro e o som dos objetos",
+       "Apenas os nomes dos lugares",
+       "Somente a cor exata de cada ser vivo"],
+    c:0,
+    e:"O sensor mede propriedades espectrais: como o alvo reflete a radiação em cada trecho. Cada material tem um jeito próprio de refletir — é essa 'assinatura' que permite reconhecê-lo na imagem."
   }]
 },
 {
@@ -253,7 +350,7 @@ const AULAS = [
        "A luz bate no objeto e volta para o sensor",
        "A luz é bloqueada pelo sensor antes de chegar ao alvo"],
     c:0,
-    e:"Na interação da luz com o alvo existem três destinos: reflexão (volta), transmissão (atravessa) e absorção (fica retida, geralmente aquecendo o objeto)."
+    e:"Na interação da luz com o alvo há três destinos: reflexão (volta), transmissão (atravessa) e absorção (fica retida, geralmente aquecendo o objeto)."
   },
   {
     t:"E o que é TRANSMISSÃO da radiação?",
@@ -262,7 +359,7 @@ const AULAS = [
        "A luz fica retida pelo objeto, aquecendo-o",
        "A luz muda de cor antes de atingir o alvo"],
     c:0,
-    e:"Transmissão é a fração da luz que passa através do alvo, como a luz atravessando um copo de água. A soma da parte refletida, absorvida e transmitida sempre corresponde a tudo o que chegou."
+    e:"Transmissão é a fração da luz que passa através do alvo, como a luz atravessando um copo de água. Tudo o que chega se divide entre a parte refletida, absorvida e transmitida."
   },
   {
     t:"Um objeto muito CLARO, como a neve fresca ou o papel branco, é assim porque:",
@@ -271,7 +368,7 @@ const AULAS = [
        "Deixa a luz passar para o outro lado",
        "Emite uma luz própria muito forte"],
     c:0,
-    e:"Superfícies claras, como neve e papel branco, têm reflectância alta: devolvem quase toda a luz. Superfícies escuras absorvem muito e refletem pouco — por isso parecem escuras."
+    e:"Superfícies claras têm reflectância alta: devolvem quase toda a luz. Superfícies escuras absorvem muito e refletem pouco — por isso parecem escuras na imagem."
   },
   {
     t:"Por que a água costuma aparecer ESCURA nas imagens de satélite?",
@@ -289,7 +386,61 @@ const AULAS = [
        "A folha absorve a luz do infravermelho e reflete o vermelho",
        "A folha transmite toda a luz de volta ao espaço"],
     c:0,
-    e:"Vegetação saudável reflete intensamente o infravermelho próximo e absorve o visível (usa essa luz na fotossíntese). É justamente essa diferença de comportamento que permite distinguir plantas em imagens."
+    e:"Vegetação saudável reflete intensamente o infravermelho próximo e absorve o visível (usa essa luz na fotossíntese). É essa diferença de comportamento que permite distinguir plantas nas imagens."
+  },
+  {
+    t:"Duas rochas que parecem IGUAIS aos olhos ('cinzas') podem ser distinguidas pelo satélite?",
+    o:["Sim — elas podem refletir quantidades diferentes em certas bandas",
+       "Não — se parecem iguais a olho nu, o satélite também não distingue",
+       "Só se o satélite voar bem baixo sobre elas",
+       "Somente pegando pedaços delas para pesar"],
+    c:0,
+    e:"Cada material tem seu comportamento espectral: mesmo parecendo iguais no dia a dia, materiais diferentes refletem quantidades distintas em certas bandas — o satélite enxerga essa diferença."
+  },
+  {
+    t:"Uma superfície ESCURA é escura porque:",
+    o:["Ela absorve mais a radiação e reflete menos",
+       "Ela reflete mais radiação que as claras",
+       "Ela emite luz própria forte",
+       "O sensor diminui o brilho só dela"],
+    c:0,
+    e:"Objetos escuros absorvem a maior parte da radiação (pouquíssima volta ao sensor) — asfalto, solo escuro e água são exemplos. O brilho na imagem vem da radiação que volta, não da que 'some' no objeto."
+  },
+  {
+    t:"Por que as PLANTAS saudáveis parecem verdes para o nosso olho?",
+    o:["Elas refletem a parte verde da luz e absorvem as outras cores",
+       "Elas emitem luz verde própria",
+       "A atmosfera pinta as plantas de verde",
+       "Elas transmitem a cor verde para o sensor"],
+    c:0,
+    e:"A luz do Sol tem todas as cores. As plantas absorvem mais o azul e o vermelho (para a fotossíntese) e refletem o verde — o verde refletido chega ao nosso olho. O reflexo alto no infravermelho o olho não vê, mas o sensor sim."
+  },
+  {
+    t:"Por que os objetos que estão na SOMBRA aparecem mais escuros na imagem?",
+    o:["Recebem menos luz para refletir — menos radiação chega deles ao sensor",
+       "Eles absorvem luz que nem existe",
+       "O sensor desliga nessas áreas",
+       "A sombra aquece o objeto e o apaga da cena"],
+    c:0,
+    e:"Se menos luz solar atinge o alvo (sombra), menos radiação é refletida — o pixel fica escuro. Por isso sombras de nuvem e de relevo aparecem como manchas escuras nas imagens."
+  },
+  {
+    t:"Água de rio com bastante BARRO (sedimento), em vez de água limpa, aparece na imagem:",
+    o:["Mais clara — o sedimento reflete a luz",
+       "Totalmente invisível",
+       "Com outra cor pintada pelo satélite",
+       "Cristalina, como vidro"],
+    c:0,
+    e:"Partículas de sedimento em suspensão refletem luz — por isso rios barrentos aparecem mais claros que a água limpa. O comportamento de reflexão muda o tom do alvo na imagem."
+  },
+  {
+    t:"Estrada de ASFALTO novo aparece escura e arena de rio clara. Isso acontece porque:",
+    o:["O asfalto reflete pouco e a arena reflete muito",
+       "O asfalto é mais frio que o resto do terreno",
+       "O satélite pinta o asfalto de escuro",
+       "A arena absorve mais que o asfalto"],
+    c:0,
+    e:"Diferença de reflectância: material claro (arena, areia) reflete muito; material escuro (asfalto) reflete quase nada. Essa diferença é o que permite distinguir os dois nas imagens."
   }]
 },
 {
@@ -311,7 +462,7 @@ const AULAS = [
        "Um sensor que depende de uma fonte externa para ver",
        "Um sensor usado somente para observação terrestre de dia"],
     c:0,
-    e:"O sensor ativo gera sua própria energia (um sinal) e mede a resposta do alvo — o exemplo clássico é o radar. Por isso ele funciona de dia e de noite."
+    e:"O sensor ativo gera a sua própria energia (um sinal) e mede a resposta do alvo — o exemplo clássico é o radar. Por isso ele funciona de dia e de noite."
   },
   {
     t:"O radar é um exemplo de sensor:",
@@ -320,7 +471,7 @@ const AULAS = [
        "Passivo — ele depende do calor do terreno",
        "Nenhum — radar não é utilizado em sensoriamento remoto"],
     c:0,
-    e:"O radar emite um pulso de micro-ondas, o pulso toca o alvo e a 'ecoada' volta — funciona como a emissão e o recebimento de um eco. Isso torna o radar um sensor ativo."
+    e:"O radar emite um pulso de micro-ondas, o pulso toca o alvo e o eco volta. O radar é o sensor ativo mais famoso, usado inclusive quando o céu está nublado."
   },
   {
     t:"Qual sensor consegue captar imagens à noite?",
@@ -338,7 +489,7 @@ const AULAS = [
        "Ele desliga automaticamente e reativa quando o céu limpa",
        "Ele enxerga as nuvens ao invés do terreno"],
     c:0,
-    e:"As micro-ondas do radar atravessam nuvens e chuva: por isso o radar consegue imagear o terreno mesmo em região nublada ou com muitos dias de chuva — situação onde o sensor óptico falha."
+    e:"As micro-ondas do radar atravessam nuvens e chuva: por isso o radar consegue imagear o terreno mesmo em região nublada — situação em que o sensor óptico falha."
   },
   {
     t:"Qual dessas situações é um problema para uma imagem de satélite óptico passivo?",
@@ -348,6 +499,60 @@ const AULAS = [
        "O sensor captar a luz em forma de números"],
     c:0,
     e:"O sensor óptico passivo enxerga a luz refletida do Sol. Nuvens bloqueiam essa luz e aparecem na imagem em vez do terreno — problema clássico para mapeamento em áreas de céu nublado."
+  },
+  {
+    t:"A câmera fotográfica comum (do celular, por exemplo) é um sensor:",
+    o:["Passivo — ela registra a luz que bate no objeto (do Sol ou de uma lâmpada)",
+       "Ativo — a câmera emite a própria luz de que precisa",
+       "Neutro — não é um sensor de nenhum tipo",
+       "Térmico — a câmera mede a temperatura dos objetos"],
+    c:0,
+    e:"A câmera comum é passiva: registra a luz que vem de fora. Sem iluminação (Sol ou lâmpada), a foto sai escura — igual ao sensor óptico passivo do satélite."
+  },
+  {
+    t:"O radar como um 'lanterna': por que essa comparação funciona?",
+    o:["O radar leva luz própria (sinal) e 'ilumina' o terreno, mesmo no escuro",
+       "O radar tem uma lâmpada que acende a superfície",
+       "O radar só enxerga quando há luz do Sol",
+       "A lanterna é usada para encontrar o satélite no céu"],
+    c:0,
+    e:"Como a lanterna, o radar emite energia própria e recebe a resposta do alvo: funciona no escuro, sob nuvem e de noite — exatamente como alguém vê com uma lanterna à noite."
+  },
+  {
+    t:"Superfície LISA (como um lago calmo) e superfície RUGOSA (como matagal) aparecem na imagem de radar como:",
+    o:["A lisa devolve pouco sinal (escura); a rugosa devolve muito (clara)",
+       "A lisa aparece clara e a rugosa escura",
+       "As duas aparecem sempre iguais",
+       "Nenhuma aparece: radar não vê superfícies"],
+    c:0,
+    e:"Superfície lisa espelha o sinal do radar para longe (fraco retorno = escura, como água calma). Superfície rugosa espalha o sinal em várias direções e devolve muito = clara."
+  },
+  {
+    t:"Qual sensor é indicado para mapear a Amazônia, região com muito céu nublado o ano todo?",
+    o:["Radar — seu sinal atravessa nuvens e alcança o terreno",
+       "Câmera óptica passiva — nuvens não atrapalham",
+       "Somente sensores instalados nas copas das árvores",
+       "Nenhum sensor funciona lá"],
+    c:0,
+    e:"Em regiões quase sempre nubladas, o radar é a escolha: por atravessar as nuvens, ele enxerga o terreno quando a imagem óptica não consegue. Dados de radar são muito usados na Amazônia."
+  },
+  {
+    t:"Um sensor que mede o CALOR emitido pelo terreno (imagem termal) é usado para:",
+    o:["Detectar incêndios, vulcões e diferenças de temperatura do solo",
+       "Fotografar nuvens ao redor do satélite",
+       "Medir a distância exata até outro planeta",
+       "Contar quantos carros passam na estrada"],
+    c:0,
+    e:"Toda superfície com calor emite radiação. O sensor termal captura essa emissão e é muito usado para ver incêndios, vulcões ativos e diferenças de temperatura na superfície."
+  },
+  {
+    t:"Por que é útil ter satélites com vários sensores (óptico, radar, termal)?",
+    o:["Cada sensor enxerga uma informação diferente — juntando, a análise fica mais completa",
+       "Para o satélite ficar mais pesado",
+       "Porque se um quebrar, nenhum funciona",
+       "Não é útil: um sensor basta sempre"],
+    c:0,
+    e:"Cada tipo de sensor capta informação diferente: o óptico vê as cores da superfície, o radar atravessa nuvens e enxerga a forma, o termal vê o calor. Juntos, revelam mais do que cada um sozinho."
   }]
 },
 {
@@ -365,7 +570,7 @@ const AULAS = [
   {
     t:"O que significa RESOLUÇÃO ESPACIAL?",
     o:["O tamanho que cada pixel representa na superfície (o menor objeto que se enxerga)",
-       "A frequência com que o satélite re passa sobre a mesma área",
+       "A frequência com que o satélite repassa sobre a mesma área",
        "A quantidade de cores diferentes que a imagem registra",
        "A altura em que o satélite orbita a Terra"],
     c:0,
@@ -406,6 +611,57 @@ const AULAS = [
        "O local onde o satélite lança os dados na Terra"],
     c:0,
     e:"O sensor separa a radiação em trechos (bandas): azul, verde, vermelho, infravermelho etc. Cada banda guarda uma imagem própria — e a combinação delas revela informações diferentes sobre o alvo."
+  },
+  {
+    t:"Qual termo significa quantos TONS DE CINZA o sensor consegue distinguir (resolução radiométrica)?",
+    o:["A quantidade de tons de brilho diferentes que cada pixel pode ter",
+       "O número de pixels de uma imagem",
+       "A frequência com que o satélite revisita a área",
+       "O tamanho do terreno coberto por cada pixel"],
+    c:0,
+    e:"Resolução radiométrica é a finura do 'degrau' de tons: menos tonalidades = imagem mais 'dura', difícil de distinguir pequenas diferenças; mais tonalidades = mais sutileza de brilho."
+  },
+  {
+    t:"Qual dessas resoluções espaciais é a MAIS detalhada (pixel menor)?",
+    o:["2 m","10 m","30 m","55 m"],
+    c:0,
+    e:"Ordenando da mais detalhada para a mais geral: 2 m > 10 m > 30 m > 55 m. O 2 m cobre menos terreno por pixel, então enxerga objetos e estruturas menores."
+  },
+  {
+    t:"Para mapear RUAS estreitas de uma cidade, o sensor precisa sobretudo de:",
+    o:["Pixel pequeno — alta resolução espacial",
+       "Imagens todas iguais, sem variação",
+       "Passagens muito espaçadas, de meses em meses",
+       "Uma única banda em cinza"],
+    c:0,
+    e:"Ruas estreitas são feições pequenas: para distingui-las, o pixel precisa cobrir menos terreno — alta resolução espacial. Pixel de 55 m juntaria ruas com casas e quarteirões numa mancha só."
+  },
+  {
+    t:"Uma imagem que registra muitas BANDAS ESTREITAS e contínuas do espectro é chamada de:",
+    o:["Hiperspectral — centenas de bandas bem separadas em trechos mínimos",
+       "Pancromática — única banda em preto e branco",
+       "Stereográfica — imagem achatada no chão",
+       "Termográfica — imagem do calor do terreno"],
+    c:0,
+    e:"Sensores multiespectrais têm poucas bandas de grande largura; os hiperespectrais têm centenas de bandas estreitas e encostadas — o material pode ser identificado quase como em laboratório."
+  },
+  {
+    t:"Pancromática é o nome dado para uma imagem:",
+    o:["Em preto e branco, de uma única banda e geralmente bem detalhada",
+       "Com todos os tipos de sensor juntos no arquivo",
+       "Tirada somente à noite, pelo radar",
+       "Feita apenas para mapas geológicos"],
+    c:0,
+    e:"Imagem pancromática registra uma banda ampla em escala de cinza, normalmente com pixel pequeno e detalhado. Comum em imagens de referência e melhorias de resolução (fusão)."
+  },
+  {
+    t:"Qual combinação resolve o desafio de detectar DESMATAMENTO em área remota e nublada?",
+    o:["Radar (ativa) para atravessar nuvens + boa resolução temporal para acompanhar mudanças",
+       "Somente imagem óptica do dia nublado, uma vez só",
+       "Uma única imagem antiga, em preto e branco",
+       "Foto de satélite com pixel de 55 m, de vários meses atrás"],
+    c:0,
+    e:"Área nublada: o radar vence (sua energia atravessa as nuvens). Mudança acompanhada no tempo: precisa revisita frequente (resolução temporal). Juntas, a dupla resolve o desafio."
   }]
 },
 {
@@ -454,16 +710,61 @@ const AULAS = [
        "Nada — comprimir sempre mantém tudo intacto",
        "O satélite captura a imagem novamente"],
     c:0,
-    e:"Alguns formatos de compressão (como o JPEG) descartam informações para deixar o arquivo menor — perda definitiva de dados. Para imagens de sensoriamento remoto, o ideal é usar formatos que guardam tudo intacto."
+    e:"Alguns formatos de compressão (como o JPEG) descartam informações para deixar o arquivo menor — perda definitiva de dados. Para imagens de sensoriamento remoto, o ideal é usar formatos que guardam tudo intacto (ex.: GeoTIFF)."
   },
   {
     t:"Por que o satélite envia os dados como NÚMEROS e não como uma foto pronta?",
     o:["Porque os números podem ser processados, combinados e comparados pelo computador",
        "Porque foto colorida não funciona em satélites",
        "Porque números são maiores que imagens",
-       "Porque a NASA pede assim, apenas por tradição"],
+       "Porque é apenas tradição, sem uma explicação técnica"],
     c:0,
     e:"Enviar níveis digitais (números) permite processar depois: realçar, combinar bandas, comparar com imagens de outras datas e calcular estatísticas. A imagem é gerada a partir dos números, quando a gente quiser."
+  },
+  {
+    t:"O que é uma CENA de satélite?",
+    o:["O quadro completo da imagem capturada numa passagem do satélite",
+       "O caminho por onde o satélite orbita a Terra",
+       "A antena que recebe os dados na Terra",
+       "O computador que exibe a imagem no mapa"],
+    c:0,
+    e:"Cena é o quadro completo que o satélite captura numa passagem — como uma 'fotografia' grande retangular. Uma cena cobre uma área grande da superfície, com muitas linhas e colunas de pixels."
+  },
+  {
+    t:"O que é uma SÉRIE TEMPORAL de imagens?",
+    o:["Várias imagens da mesma área em datas diferentes, que mostram a mudança no tempo",
+       "Uma única imagem muito detalhada",
+       "Um conjunto de imagens de lugares totalmente diferentes",
+       "Uma imagem que viaja pelo espaço há muito tempo"],
+    c:0,
+    e:"Série temporal é a sequência de imagens da mesma área ao longo do tempo. É com ela que se acompanha o crescimento de cidade, desmatamento, plantação, enchentes e outros fenômenos."
+  },
+  {
+    t:"REALCE DE CONTRASTE na imagem serve para:",
+    o:["Ajudar a distinguir alvos parecidos, esticando os tons da imagem",
+       "Apagar detalhes indesejados da imagem",
+       "Aumentar o tamanho do arquivo, sem motivo",
+       "Esconder as nuvens do céu"],
+    c:0,
+    e:"Realçar o contraste é espalhar melhor os tons da imagem (escuros mais escuros, claros mais claros). Isso deixa mais fácil ver a diferença entre alvos parecidos."
+  },
+  {
+    t:"Na 'falsa cor', as bandas são mostradas com cores diferentes das reais para:",
+    o:["Fazer certos alvos se destacarem (ex.: vegetação saudável aparece vermelha/rosa)",
+       "Pintar o terreno da cor que o satélite quiser",
+       "Fazer a imagem ficar idêntica ao que o olho vê",
+       "Trocar o nome dos lugares da cena"],
+    c:0,
+    e:"Na falsa cor (composição colorida com troca de cores), cada banda recebe uma cor. Assim, alvos que se confundem na cor verdadeira ficam visíveis na fake color — técnica muito usada para monitorar vegetação."
+  },
+  {
+    t:"O que significam os formatos SEM PERDA (ex.: PNG, GeoTIFF) para imagens de estudo?",
+    o:["Guardam toda a informação intacta — nada é jogado fora na compressão",
+       "Apagam todas as informações de cor",
+       "Deixam a imagem menor em todos os casos, sem exceção",
+       "Só funcionam quando há nuvem na cena"],
+    c:0,
+    e:"Formatos sem perda comprimem (diminuem o arquivo) sem descartar dados — o valor de cada pixel permanece igual ao original. Por isso são preferidos em dados científicos."
   }]
 },
 {
@@ -521,13 +822,68 @@ const AULAS = [
        "Porque o satélite nunca passa duas vezes no mesmo lugar",
        "Porque as imagens antigas não têm cores"],
     c:0,
-    e:"Cada dia tem uma atmosfera diferente (mais ou menos vapor, aerossóis, nuvens), o que altera os brilhos registrados. Ignorar isso pode levar a conclusões erradas — o efeito atmosférico se enxerga como diferença real do terreno."
+    e:"Cada dia tem uma atmosfera diferente (mais ou menos vapor, aerossóis, nuvens), o que altera os brilhos registrados. Ignorar isso pode levar a conclusões erradas — o efeito atmosférico se confunde com diferença real do terreno."
+  },
+  {
+    t:"O que é ESPALHAMENTO da radiação na atmosfera?",
+    o:["A luz se desvia em várias direções ao encontrar partículas (gases, poeira, gotas)",
+       "A luz ganha velocidade na atmosfera",
+       "A luz desaparece por completo no céu",
+       "A luz esquenta o sensor antes de chegar ao alvo"],
+    c:0,
+    e:"Partículas e gases da atmosfera desviam a luz em várias direções — é o espalhamento. Parte dessa luz 'sai do caminho' e diminui o contraste da cena (imagem mais leitosa)."
+  },
+  {
+    t:"Por que o CÉU parece AZUL para nós?",
+    o:["As moléculas do ar espalham mais a luz azul para todos os lados",
+       "O oceano pinta o céu ao refletir a água",
+       "O Sol é azul, mas parece laranja ao entardecer",
+       "O espalhamento remove o vermelho e o azul fica pintado na retina"],
+    c:0,
+    e:"As moléculas de gás espalham a luz azul mais forte que as outras cores — esse azul espalhado enche o céu todo. É o espalhamento Rayleigh, o mesmo que interfere nas imagens de satélite."
+  },
+  {
+    t:"Por que NUVENS aparecem BRANCAS nas imagens?",
+    o:["Suas gotículas são grandes e espalham todas as cores igualmente",
+       "Elas absorvem todas as cores, menos o branco",
+       "O satélite pinta nuvens de branco por convenção",
+       "Emittem luz própria branca"],
+    c:0,
+    e:"O espalhamento não seletivo acontece quando a partícula é grande (gotícula de nuvem): todas as cores são desviadas com a mesma força — a soma delas parece branco. É por isso que as nuvens também parecem brancas para o olho."
+  },
+  {
+    t:"Fumaça de QUEIMADA no dia da captura deixa a imagem da área:",
+    o:["Mais leitosa e com menos contraste entre os objetos",
+       "Com mais contraste entre os alvos",
+       "Inalterada, pois fumaça não interfere",
+       "Com o terreno totalmente visível e nítido"],
+    c:0,
+    e:"A fumaça (aerossóis) espalha a luz e soma um 'véu' na cena: os brilhos sobem e a diferença entre os alvos diminui — tudo fica menos contrastado. Isso precisa ser levado em conta ou corrigido."
+  },
+  {
+    t:"Em imagens já CORRIGIDAS (Surface Reflectance), o que já foi feito:",
+    o:["O efeito da atmosfera já foi retirado — a imagem mostra melhor a superfície",
+       "Todas as nuvens foram retiradas e substituídas por outro lugar",
+       "A imagem foi pintada com as cores reais",
+       "Nada — a imagem está idêntica à bruta"],
+    c:0,
+    e:"Produtos corrigidos (SR) já saíram do efeito da atmosfera: os brilhos representam melhor a superfície real. Para comparações justas entre datas, prefira essas imagens."
+  },
+  {
+    t:"Qual é o caminho da radiação numa imagem óptica comum de satélite?",
+    o:["Sol → superfície → sensor (o satélite captura a luz refletida que o Sol trouxe)",
+       "Sensor → sol → superfície → satélite",
+       "Superfície → atmosfera → estrela vizinha",
+       "Nuvem → satélite → Terra → Sol"],
+    c:0,
+    e:"O fluxo típico do sensor óptico passivo: a luz sai do Sol, bate na superfície, reflete e vai até o sensor no satélite — e no caminho de ida e de volta atravessa a atmosfera, que interfere."
   }]
 }
 ];
 
 /* ================== LÓGICA DO QUIZ ================== */
-let aulaAtual=null, questoes=[], idx=0, score=0, streak=0, bestStreak=0, log=[];
+let aulaAtual=null, questoes=[], idx=0, score=0, streak=0, bestStreak=0,
+    log=[], ord=[], sessao=0, jogador='';
 const $=id=>document.getElementById(id);
 
 function show(id){
@@ -536,11 +892,14 @@ function show(id){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* best score por aula */
 function getBest(n){ return localStorage.getItem('qr_best_'+n); }
 function setBest(n,v){ localStorage.setItem('qr_best_'+n,v); }
+function getBank(n){ return parseInt(localStorage.getItem('qr_bank_'+n)||'0',10); }
+function setBank(n,v){ localStorage.setItem('qr_bank_'+n,String(v)); }
 
 function buildMenu(){
+  $('pName').textContent=jogador;
+  $('pBank').textContent=getBank(jogador);
   const g=$('menuGrid');
   g.innerHTML='';
   const totalQ=AULAS.reduce((s,a)=>s+a.questoes.length,0);
@@ -548,7 +907,7 @@ function buildMenu(){
   mix.className='aula-card mix-card';
   mix.innerHTML=`<span class="aula-num">⭐ MODO GERAL</span>
     <h2>Quiz geral — questões sorteadas de todas as aulas</h2>
-    <small>12 questões sorteadas de ${totalQ} (todas as aulas)</small>`;
+    <small>12 questões sorteadas de ${totalQ}</small>`;
   mix.onclick=()=>startQuiz(null);
   g.appendChild(mix);
   AULAS.forEach(a=>{
@@ -582,8 +941,9 @@ function startQuiz(num){
     a.questoes.forEach(q=>pool.push({...q,aula:a.num}));
   }
   questoes=shuffle(pool);
-  idx=0; score=0; streak=0; bestStreak=0; log=[];
+  idx=0; score=0; streak=0; bestStreak=0; sessao=0; log=[];
   $('qTotal').textContent=questoes.length;
+  $('qBank').textContent=sessao+' 💰 (total: '+getBank(jogador)+')';
   $('qAula').textContent = num===null ? 'Modo Geral' : 'Aula '+num+' · '+AULAS.find(x=>x.num===num).titulo;
   show('quiz');
   renderQ();
@@ -591,9 +951,11 @@ function startQuiz(num){
 
 function renderQ(){
   const q=questoes[idx];
+  ord=shuffle([0,1,2,3]); // posição das alternativas sorteada a cada questão
   $('qNum').textContent=idx+1;
   $('qScore').textContent=score;
   $('qStreak').textContent=streak;
+  $('qBank').textContent=sessao+' 💰 (total: '+getBank(jogador)+')';
   $('qBar').style.width=(idx/questoes.length*100)+'%';
   $('qTag').textContent='Aula '+q.aula+' — Questão '+(idx+1);
   $('qText').textContent=q.t;
@@ -601,34 +963,55 @@ function renderQ(){
   $('qFeedback').innerHTML='';
   $('btnNext').style.display='none';
   const box=$('qOpts'); box.innerHTML='';
-  q.o.forEach((txt,i)=>{
+  ord.forEach((realI,displayI)=>{
     const b=document.createElement('button');
     b.className='opt';
-    b.innerHTML=`<span class="letter">${'ABCD'[i]}</span><span>${txt}</span>`;
-    b.onclick=()=>answer(i,b);
+    b.innerHTML=`<span class="letter">${'ABCD'[displayI]}</span><span>${q.o[realI]}</span>`;
+    b.onclick=()=>answer(displayI,b);
     box.appendChild(b);
   });
 }
 
+function prizeValue(){
+  // prêmio cresce com a sequência: 10, 20, 30, ...
+  return 10 + streak*10; // streak aqui é já a sequência anterior
+}
+
 function answer(sel,btn){
   const q=questoes[idx];
-  const ok = sel===q.c;
-  // desabilita tudo
+  const ok = ord[sel]===q.c;
+  const fb=$('qFeedback');
+  // desabilita tudo e pinta
   document.querySelectorAll('#qOpts .opt').forEach((b,i)=>{
     b.disabled=true;
-    if(i===q.c) b.classList.add('correct');
+    if(ord[i]===q.c) b.classList.add('correct');
     else if(i===sel && !ok) b.classList.add('wrong');
     else b.classList.add('dim');
   });
-  // feedback (sempre mostra a resposta correta)
-  const fb=$('qFeedback');
+  let valor=0;
+  if(ok){
+    valor=prizeValue();
+    score++; streak++; bestStreak=Math.max(bestStreak,streak);
+    sessao+=valor;
+    const total=getBank(jogador)+valor;
+    setBank(jogador,total);
+    // pop do prêmio
+    const p=document.createElement('div');
+    p.className='prize-pop';
+    p.textContent='+'+valor+' 💰';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1000);
+  } else {
+    streak=0;
+  }
+  const letraCorreta='ABCD'[ord.indexOf(q.c)];
+  const textoCorreto=q.o[q.c];
   fb.className='feedback show '+(ok?'ok':'err');
-  fb.innerHTML=`<div class="verdict">${ok?'✅ Correto!':'❌ Resposta incorreta — a correta é a alternativa '+'ABCD'[q.c]+' ('+q.o[q.c].slice(0,80)+(q.o[q.c].length>80?'…':'')+')'}</div><div>💡 ${q.e}</div>`;
-  if(ok){ score++; streak++; bestStreak=Math.max(bestStreak,streak); }
-  else streak=0;
+  fb.innerHTML=`<div class="verdict">${ok?'✅ Correto!':'❌ Resposta incorreta — a correta é a alternativa '+letraCorreta+' ('+textoCorreto.slice(0,80)+(textoCorreto.length>80?'…':'')+')'}</div><div>💡 ${q.e}</div>`+(ok?`<div class="prize">Prêmio: +${valor} 💰 (sequência x${streak})</div>`:'');
   $('qScore').textContent=score;
   $('qStreak').textContent=streak;
-  log.push({q, sel, ok});
+  $('qBank').textContent=sessao+' 💰 (total: '+getBank(jogador)+')';
+  log.push({q, sel:ord[sel], letra:'ABCD'[sel], letraCorreta, ok, valor});
   $('btnNext').style.display='inline-block';
   $('btnNext').textContent = idx===questoes.length-1 ? 'Ver resultado 🏁' : 'Próxima →';
 }
@@ -641,29 +1024,43 @@ function finish(){
   $('rPct').textContent=pct+'%';
   $('rMsg').textContent = pct===100?'🏆 Perfeito! Nota máxima!' : pct>=80?'🎉 Excelente! Você domina essa aula.' : pct>=50?'👍 Bom trabalho — revise os erros.' : '📚 Vale revisar a aula e tentar de novo.';
   $('rStats').textContent=`${score} de ${questoes.length} acertos • melhor sequência: ${bestStreak} 🔥`;
-  // salva recorde
+  $('rBank').textContent=`💰 Prêmios nesta partida: ${sessao} • saldo acumulado de ${jogador}: ${getBank(jogador)}`;
   if(aulaAtual!==null){
     const b=parseFloat(getBest(aulaAtual));
     if(!b || pct>b) setBest(aulaAtual,pct);
   }
-  // revisão
   const rv=$('rReview'); rv.innerHTML='';
   log.forEach((l,i)=>{
     const d=document.createElement('div');
     d.className='rev-item';
-    d.innerHTML=`<b class="${l.ok?'ac':'er'}">${l.ok?'✔':'✘'} Q${i+1} (Aula ${l.q.aula}):</b> ${l.q.t}<br>
+    d.innerHTML=`<b class="${l.ok?'ac':'er'}">${l.ok?'✔':'✘'} Q${i+1} (Aula ${l.q.aula})${l.valor?' — +'+l.valor+' 💰':''}:</b> ${l.q.t}<br>
       Correta: <b>${l.q.o[l.q.c]}</b>${l.ok?'':`<br>Sua escolha: <b class="er">${l.q.o[l.sel]}</b>`}<br><span style="color:var(--muted)">💡 ${l.q.e}</span>`;
     rv.appendChild(d);
   });
   show('result');
 }
 
+/* fluxo de entrada */
+function enterMenu(){
+  const n=$('nameInput').value.trim();
+  if(!n){ $('nameInput').focus(); return; }
+  jogador=n;
+  localStorage.setItem('qr_player',jogador);
+  buildMenu();
+  show('menu');
+}
+$('btnName').onclick=enterMenu;
+$('nameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') enterMenu(); });
+$('btnChangeName').onclick=()=>{ $('nameInput').value=''; show('nameScreen'); };
 $('btnNext').onclick=()=>{ idx++; (idx<questoes.length)?renderQ():finish(); };
 $('btnQuit').onclick=()=>buildMenu()||show('menu');
 $('btnAgain').onclick=()=>startQuiz(aulaAtual);
 $('btnMenu').onclick=()=>{ buildMenu(); show('menu'); };
 
-buildMenu();
+/* se já tem jogador salvo, lembra o nome */
+jogador = localStorage.getItem('qr_player')||'';
+if(jogador){ $('nameInput').value=jogador; }
+if(jogador){ buildMenu(); show('menu'); } else { show('nameScreen'); }
 </script>
 </body>
 </html>
