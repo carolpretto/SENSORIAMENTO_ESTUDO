@@ -736,7 +736,7 @@ const AULAS = [
        "A frequência com que o satélite revisita a área",
        "O tamanho do terreno coberto por cada pixel"],
     c:0,
-    e:"Essa é a resolução radiométrica: a finura do 'degrau' de tons. Menos tonalidades = imagem mais 'dura', difícil de verpequenas diferenças; mais tonalidades = mais sutileza de brilho."
+    e:"Essa é a resolução radiométrica: a finura do 'degrau' de tons. Menos tonalidades = imagem mais 'dura', difícil de ver pequenas diferenças; mais tonalidades = mais sutileza de brilho."
   },
   {
     t:"Qual dessas resoluções espaciais é a MAIS detalhada (pixel menor)?",
@@ -1247,8 +1247,13 @@ function startMem(tema){
   } else {
     pares=shuffle(TEMAS[tema].pares.map(p=>({...p})));
   }
+  /* cada par gera DUAS cartas diferentes: uma visual (emoji/quadro da banda)
+     e uma textual (conceito) — elas se encaixam como imagem + conceito */
   memCards=[];
-  pares.forEach((p,i)=>{ memCards.push({...p, id:i}); memCards.push({...p, id:i}); });
+  pares.forEach((p,i)=>{
+    memCards.push({face:p.face, id:i});
+    memCards.push({face:p.par,  id:i});
+  });
   memCards=shuffle(memCards);
   memMatched=0; memMoves=0; memCoins=0; memSecs=0; memLock=false; memFlipped=[];
   $('mTema').textContent = tema==='misto' ? 'Misto ⭐' : TEMAS[tema].titulo;
@@ -1277,7 +1282,7 @@ function renderBoard(){
     d.dataset.i=i;
     d.innerHTML=`<div class="mcard-inner">
       <div class="mface mface-back">❓</div>
-      <div class="mface mface-front">${faceHTML(c)}</div>
+      <div class="mface mface-front">${faceHTML(c.face)}</div>
     </div>`;
     d.onclick=()=>flipCard(i,d);
     b.appendChild(d);
