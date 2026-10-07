@@ -6,85 +6,89 @@
 <title>Sensoriamento Remoto — Central de Revisão</title>
 <style>
   :root{
-    --card:#1e293b; --card2:#273449; --text:#e2e8f0; --muted:#94a3b8;
-    --accent:#38bdf8; --ok:#22c55e; --okbg:#052e16; --err:#ef4444; --errbg:#3f0a0a;
-    --gold:#fbbf24; --violet:#a78bfa;
+    --card:#ffffff; --card2:#eef4ee; --text:#243b2e; --muted:#5f7a68;
+    --accent:#2f6b3f; --accent2:#1e3f6f; --ok:#2e8b57; --okbg:#e7f4ec; --err:#c0392b; --errbg:#fdecec;
+    --gold:#b45309; --violet:#4c6b3c;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
     font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    background:linear-gradient(160deg,#0f172a 0%,#1e293b 60%,#0c4a6e 100%);
+    background:linear-gradient(rgba(24,62,38,.62), rgba(24,62,38,.62)), url('fundo.png') no-repeat center top; background-size:cover; background-attachment:fixed;
     min-height:100vh; color:var(--text); padding:24px 16px;
   }
   .container{max-width:860px; margin:0 auto;}
   header{text-align:center; margin-bottom:24px;}
-  header h1{font-size:1.7rem; letter-spacing:.5px;}
+  .logo-circle{width:150px; height:150px; border-radius:50%; object-fit:cover; background:#fff;
+    box-shadow:0 8px 24px rgba(23,64,38,.22); margin-bottom:12px;}
+  header h1{font-size:1.7rem; letter-spacing:.5px; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.35);}
   header h1 span{color:var(--accent);}
-  header p{color:var(--muted); margin-top:6px; font-size:.95rem;}
+  header p{color:#e2efe0; margin-top:6px; font-size:.95rem;}
 
   .screen{display:none; animation:fade .3s;}
   .screen.active{display:block;}
   @keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
 
   /* nome */
-  .name-card{max-width:460px; margin:40px auto; background:var(--card); border:1px solid #334155;
-    border-radius:16px; padding:34px 28px; text-align:center;}
-  .name-card input{width:100%; background:var(--card2); border:2px solid #334155; border-radius:10px;
+  .name-card{max-width:460px; margin:40px auto; background:rgba(255,255,255,.96); border:1px solid #c9dccd;
+    box-shadow:0 6px 20px rgba(23,64,38,.10); border-radius:16px; padding:34px 28px; text-align:center;}
+  .name-card input{width:100%; background:#f2f6f2; border:2px solid #dbe6dc; border-radius:10px;
     padding:12px 14px; color:var(--text); font-size:1rem; text-align:center; margin:14px 0;}
   .name-card input:focus{outline:none; border-color:var(--accent);}
   .name-card p{color:var(--muted); font-size:.9rem; margin-top:8px;}
 
   /* barra do jogador */
   .player-bar{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
-    background:var(--card); border:1px solid #334155; border-radius:14px;
-    padding:14px 18px; margin-bottom:16px;}
-  .player-bar .who b{color:var(--accent); font-size:1.1rem;}
+    background:rgba(255,255,255,.96); border:1px solid #c9dccd; box-shadow:0 4px 16px rgba(23,64,38,.08);
+    border-radius:14px; padding:14px 18px; margin-bottom:16px;}
+  .player-bar .who b{color:var(--accent2); font-size:1.1rem;}
   .player-bar .bank{color:var(--gold); font-weight:700;}
 
   /* cards de seleção */
   .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
-  .sel-card{background:var(--card); border:1px solid #334155; border-radius:14px;
-    padding:18px; cursor:pointer; transition:.18s; text-align:left;}
-  .sel-card:hover{transform:translateY(-4px); border-color:var(--accent); box-shadow:0 8px 24px rgba(56,189,248,.15);}
-  .sel-num{display:inline-block; background:var(--accent); color:#0f172a; font-weight:700;
+  .sel-card{background:rgba(255,255,255,.96); border:1px solid #c9dccd; box-shadow:0 4px 16px rgba(23,64,38,.08);
+    border-radius:14px; padding:18px; cursor:pointer; transition:.18s; text-align:left;}
+  .sel-card:hover{transform:translateY(-4px); border-color:var(--accent); box-shadow:0 10px 28px rgba(23,64,38,.16);}
+  .sel-num{display:inline-block; background:var(--accent); color:#fff; font-weight:700;
     border-radius:8px; padding:2px 10px; font-size:.8rem; margin-bottom:8px;}
-  .sel-card h2{font-size:1.02rem; margin-bottom:6px; line-height:1.3;}
+  .sel-card h2{font-size:1.02rem; margin-bottom:6px; line-height:1.3; color:var(--accent2);}
   .sel-card .ic{font-size:2.4rem; margin-bottom:6px;}
   .sel-card small{color:var(--muted);}
   .sel-card .best{margin-top:10px; font-size:.78rem; color:var(--gold);}
   .wide{grid-column:1/-1; text-align:center;}
   .locked{opacity:.45; filter:grayscale(.6);}
-  .locked:hover{transform:none; border-color:#334155; box-shadow:none; cursor:not-allowed;}
+  .locked:hover{transform:none; border-color:#dbe6dc; box-shadow:0 4px 16px rgba(23,64,38,.08); cursor:not-allowed;}
   .done-badge{color:var(--ok); font-weight:700;}
   .hub-card{grid-column:1/-1; display:flex; align-items:center; gap:18px; padding:24px;}
   .hub-card .ic{font-size:3rem; flex-shrink:0;}
   .hub-card small{color:var(--muted); line-height:1.4; display:block;}
-  .hub-questions{background:linear-gradient(120deg,#0ea5e933,#22c55e33);}
-  .hub-mem{background:linear-gradient(120deg,#f59e0b33,#ef444433);}
-  .group-title{margin:20px 0 10px; font-size:1.05rem; color:var(--violet); letter-spacing:.5px;}
+  .hub-questions{background:linear-gradient(120deg,#e3f0e5ee,#ffffffee);}
+  .hub-mem{background:linear-gradient(120deg,#fbf0d6ee,#ffffffee);}
+  .hub-mix{background:linear-gradient(120deg,#e3f0e5ee,#fdeed6ee);}
+  .group-title{margin:20px 0 10px; font-size:1.05rem; color:#f2ecd4; letter-spacing:.5px;}
 
   /* topbar/chips */
   .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;}
-  .chip{background:var(--card2); border-radius:20px; padding:6px 14px; font-size:.85rem;}
-  .chip b{color:var(--accent);}
+  .chip{background:rgba(255,255,255,.95); border:1px solid #c9dccd; border-radius:20px; padding:6px 14px; font-size:.85rem;}
+  .chip b{color:var(--accent2);}
   .streak{color:var(--gold);}
-  .bar{height:8px; background:var(--card2); border-radius:6px; margin-bottom:20px; overflow:hidden;}
-  .bar > div{height:100%; background:linear-gradient(90deg,var(--accent),#818cf8); width:0%; transition:width .3s;}
+  .bar{height:8px; background:#dbe6dc; border-radius:6px; margin-bottom:20px; overflow:hidden;}
+  .bar > div{height:100%; background:linear-gradient(90deg,#2f6b3f,#4a8a5c); width:0%; transition:width .3s;}
 
   /* pergunta / cartões */
-  .q-card{background:var(--card); border:1px solid #334155; border-radius:16px; padding:24px;}
+  .q-card{background:rgba(255,255,255,.97); border:1px solid #c9dccd; box-shadow:0 6px 20px rgba(23,64,38,.10);
+    border-radius:16px; padding:24px;}
   .q-tag{font-size:.75rem; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;}
   .q-text{font-size:1.12rem; line-height:1.5; margin-bottom:20px;}
   .opts{display:flex; flex-direction:column; gap:10px;}
-  .opt{background:var(--card2); border:2px solid transparent; border-radius:12px;
+  .opt{background:#f2f6f2; border:2px solid transparent; border-radius:12px;
     padding:14px 16px; text-align:left; color:var(--text); font-size:1rem; cursor:pointer;
     transition:.15s; display:flex; gap:12px; align-items:center; width:100%;}
-  .opt:hover:not(:disabled){border-color:var(--accent); transform:translateX(4px);}
+  .opt:hover:not(:disabled){border-color:var(--accent); background:#fff; transform:translateX(4px);}
   .opt:disabled{cursor:default;}
-  .opt .letter{flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#334155;
-    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem;}
+  .opt .letter{flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#dfe9e0;
+    color:var(--accent2); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem;}
   .opt.correct{background:var(--okbg); border-color:var(--ok);}
-  .opt.correct .letter{background:var(--ok); color:#052e16;}
+  .opt.correct .letter{background:var(--ok); color:#fff;}
   .opt.wrong{background:var(--errbg); border-color:var(--err);}
   .opt.wrong .letter{background:var(--err); color:#fff;}
   .opt.dim{opacity:.45;}
@@ -97,17 +101,18 @@
   .feedback.err .verdict{color:var(--err);}
   .feedback .prize{color:var(--gold); font-weight:700; margin-top:6px;}
   .prize-pop{position:fixed; top:30%; left:50%; transform:translateX(-50%);
-    color:var(--gold); font-size:2rem; font-weight:800; pointer-events:none;
-    animation:pop 1s forwards; z-index:50; text-shadow:0 2px 10px rgba(0,0,0,.6);}
+    color:#b45309; font-size:2rem; font-weight:800; pointer-events:none;
+    animation:pop 1s forwards; z-index:50; text-shadow:0 2px 8px rgba(255,255,255,.9);}
   @keyframes pop{0%{opacity:0; transform:translate(-50%,10px) scale(.6);} 20%{opacity:1; transform:translate(-50%,-6px) scale(1.15);} 100%{opacity:0; transform:translate(-50%,-40px) scale(1);}}
   @keyframes shake{0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}}
   .shake{animation:shake .3s;}
 
   /* resultado */
-  .result-card{text-align:center; background:var(--card); border:1px solid #334155; border-radius:16px; padding:36px 24px;}
+  .result-card{text-align:center; background:rgba(255,255,255,.97); border:1px solid #c9dccd;
+    box-shadow:0 8px 26px rgba(23,64,38,.12); border-radius:16px; padding:36px 24px;}
   .score-ring{width:150px; height:150px; border-radius:50%; margin:0 auto 18px;
     display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative;}
-  .score-ring::before{content:''; position:absolute; inset:12px; border-radius:50%; background:var(--card);}
+  .score-ring::before{content:''; position:absolute; inset:12px; border-radius:50%; background:#fff;}
   .score-ring .pct, .score-ring .lbl{position:relative; z-index:1;}
   .score-ring .pct{font-size:2rem; font-weight:800;}
   .score-ring .lbl{font-size:.75rem; color:var(--muted);}
@@ -116,14 +121,14 @@
   .gold{color:var(--gold); font-weight:700;}
   .review{text-align:left; margin-top:22px;}
   .review h3{margin-bottom:10px; font-size:1rem;}
-  .rev-item{background:var(--card2); border-radius:10px; padding:12px 14px; margin-bottom:8px; font-size:.9rem; line-height:1.45;}
+  .rev-item{background:#f2f6f2; border-radius:10px; padding:12px 14px; margin-bottom:8px; font-size:.9rem; line-height:1.45;}
   .rev-item b.ac{color:var(--ok);}
   .rev-item b.er{color:var(--err);}
-  .aula-line{display:flex; justify-content:space-between; background:var(--card2); border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:.9rem;}
-  .btn{display:inline-block; background:var(--accent); color:#0f172a; font-weight:700; border:none;
+  .aula-line{display:flex; justify-content:space-between; background:#eef4ee; border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:.9rem;}
+  .btn{display:inline-block; background:var(--accent); color:#fff; font-weight:700; border:none;
     border-radius:10px; padding:12px 26px; font-size:1rem; cursor:pointer; transition:.15s;}
-  .btn:hover{filter:brightness(1.1); transform:translateY(-2px);}
-  .btn-ghost{background:var(--card2); color:var(--text); border:1px solid #475569;}
+  .btn:hover{filter:brightness(1.08); transform:translateY(-2px);}
+  .btn-ghost{background:#fff; color:var(--text); border:1px solid #b9ccc0;}
   .btn-sm{padding:8px 16px; font-size:.85rem;}
   .btn-row{margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;}
   .btn-row.center{justify-content:center;}
@@ -139,56 +144,65 @@
   .mface{position:absolute; inset:0; border-radius:12px; display:flex; flex-direction:column;
     align-items:center; justify-content:center; text-align:center; padding:6px;
     backface-visibility:hidden; -webkit-backface-visibility:hidden;}
-  .mface-back{background:linear-gradient(140deg,#334155,#1e293b); border:2px solid #475569;
-    font-size:2rem; color:#64748b;}
-  .mface-front{transform:rotateY(180deg); background:var(--card2); border:2px solid #334155;}
+  .mface-back{background:linear-gradient(140deg,#2f6b3f,#22492d); border:2px solid #22492d;
+    font-size:2rem; color:#cfe3d4;}
+  .mface-front{transform:rotateY(180deg); background:#fff; border:2px solid #d7e3d8;}
   .mface-front.matched{border-color:var(--ok); background:var(--okbg);}
   .mface .eico{font-size:2rem; line-height:1; margin-bottom:6px;}
-  .mface .txt{font-size:.85rem; line-height:1.3; font-weight:700;}
-  .mface .def{font-size:.74rem; line-height:1.3; font-style:italic; color:#cbd5e1;}
-  .mface-front.term-face{background:linear-gradient(150deg,#1e3a5f,#1e293b);}
+  .mface .txt{font-size:.85rem; line-height:1.3; font-weight:700; color:var(--text);}
+  .mface .def{font-size:.74rem; line-height:1.3; font-style:italic; color:#4f6b59;}
+  .mface-front.term-face{background:linear-gradient(150deg,#eaf3ec,#dfeade);}
   .mcard.flip{pointer-events:none;}
   .mcard.matchdone{cursor:default;}
 
   /* relacione */
-  .rel-card{background:var(--card2); border:2px solid #334155; border-radius:12px;
-    padding:12px 16px; cursor:pointer; font-weight:700; text-align:center; transition:.15s;}
+  .rel-card{background:#fff; border:2px solid #dbe6dc; box-shadow:0 3px 10px rgba(23,64,38,.07);
+    border-radius:12px; padding:12px 16px; cursor:pointer; font-weight:700; text-align:center; transition:.15s;
+    color:var(--accent2);}
   .rel-card:hover{border-color:var(--accent);}
-  .rel-card.sel{border-color:var(--accent); background:#16324c;}
+  .rel-card.sel{border-color:var(--accent); background:#e3f0e5;}
   .rel-card.placed{visibility:hidden;}
-  .rel-dest{display:block; width:100%; text-align:left; background:var(--card); border:2px solid #334155;
-    border-radius:12px; padding:12px 16px; margin-bottom:8px; color:var(--text); font-size:.95rem; cursor:pointer; transition:.15s;}
+  .rel-dest{display:block; width:100%; text-align:left; background:#fff; border:2px solid #dbe6dc;
+    border-radius:12px; padding:12px 16px; margin-bottom:8px; color:var(--text); font-size:.95rem;
+    cursor:pointer; transition:.15s; box-shadow:0 3px 10px rgba(23,64,38,.06);}
   .rel-dest:hover:not(:disabled){border-color:var(--accent);}
   .rel-dest.ok{background:var(--okbg); border-color:var(--ok); cursor:default;}
   .rel-dest.bad{animation:shake .3s; border-color:var(--err);}
-  .rel-hint{color:var(--muted); font-size:.9rem; margin-bottom:12px;}
+  .rel-hint{color:#e6f1e4; font-size:.9rem; margin-bottom:12px;}
 
   /* quem sou eu */
-  .hint-box{background:var(--card2); border-radius:12px; padding:14px 16px; margin-bottom:14px;}
-  .hint-box li{list-style:none; padding:6px 0; border-bottom:1px dashed #334155; font-size:.98rem; line-height:1.4;}
+  .hint-box{background:#f2f6f2; border:1px dashed #b9ccc0; border-radius:12px; padding:14px 16px; margin-bottom:14px;}
+  .hint-box li{list-style:none; padding:6px 0; border-bottom:1px dashed #cbd9ce; font-size:.98rem; line-height:1.4;}
   .hint-box li:last-child{border:none;}
-  .hint-box li em{color:var(--accent); font-style:normal; font-weight:700;}
+  .hint-box li em{color:var(--accent2); font-style:normal; font-weight:700;}
 
   /* V/F e detetive */
   .vf-btns{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap;}
   .vf-btns .btn{flex:1; min-width:140px;}
-  .btn-true{background:var(--ok); color:#04220f;}
+  .btn-true{background:var(--ok); color:#fff;}
   .btn-false{background:var(--err); color:#fff;}
   .frase{font-size:1.15rem; line-height:1.55; font-style:italic; border-left:4px solid var(--accent);
-    padding:10px 16px; background:var(--card2); border-radius:0 12px 12px 0; margin-bottom:20px;}
+    padding:10px 16px; background:#f2f6f2; border-radius:0 12px 12px 0; margin-bottom:20px;}
 
   /* classifique */
   .cat-btns{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-top:18px;}
-  .cat-btn{background:var(--card2); border:2px solid #334155; border-radius:10px; padding:12px;
+  .cat-btn{background:#fff; border:2px solid #dbe6dc; border-radius:10px; padding:12px;
     color:var(--text); font-size:.95rem; cursor:pointer; transition:.15s;}
   .cat-btn:hover{border-color:var(--accent);}
   .cat-btn.bad{border-color:var(--err); background:var(--errbg);}
   .clas-card{font-size:1.4rem; font-weight:800; text-align:center; padding:26px 16px;
-    background:linear-gradient(140deg,#1e3a5f,#1e293b); border:2px solid #475569; border-radius:14px; margin-bottom:14px;}
+    background:linear-gradient(140deg,#2f6b3f,#1e3f6f); border:2px solid #22492d; border-radius:14px;
+    margin-bottom:14px; color:#fff; box-shadow:0 8px 22px rgba(23,64,38,.20);}
 
-  footer{text-align:center; margin-top:28px; color:var(--muted); font-size:.8rem;}
+  footer{text-align:center; margin-top:28px; color:#d8e8d6; font-size:.8rem;}
+  .intro{margin:12px 0 16px; color:#e6f1e4; font-size:.95rem;}
+  .grid .wide.stats{color:#e8f2e6;}
+  .grid .wide.stats .done-badge{color:#7ee2a8;}
+  .logo-wrap{position:relative; width:150px; margin:0 auto 12px;}
+  .logo-emo{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:4.2rem;}
   @media(max-width:520px){
     header h1{font-size:1.3rem;}
+    .logo-circle{width:110px; height:110px;}
     .q-card{padding:18px;}
     #board{grid-template-columns:repeat(auto-fit,minmax(84px,1fr));}
     .hub-card{flex-direction:column; text-align:center;}
@@ -198,8 +212,9 @@
 <body>
 <div class="container">
   <header>
-    <h1>🛰️ Sensoriamento <span>Remoto</span> — Central de Revisão</h1>
-    <p>Aulas 1 a 6 • mesmo jogador, mesmo saldo de prêmios 💰</p>
+    <div class="logo-wrap"><span class="logo-emo">🛰️</span><img src="logo.png" alt="" class="logo-circle" onerror="this.remove()"></div>
+    <h1>Central de <span>Revisão</span> — Sensoriamento Remoto</h1>
+    <p>Aulas 1 a 6 • Geografia • mesmo jogador, mesmo saldo de prêmios 💰</p>
   </header>
 
   <!-- TELA: nome -->
@@ -225,7 +240,7 @@
   <!-- ===== JOGO 1: QUIZ ===== -->
   <section id="qMenu" class="screen">
     <button class="btn btn-ghost btn-sm btnHub">🏠 Início</button>
-    <p style="margin:12px 0 16px; color:var(--muted); font-size:.95rem;">Escolha o filtro: a resposta e a explicação aparecem após cada questão. 3 vidas por tentativa.</p>
+    <p class="intro">Escolha o filtro: a resposta e a explicação aparecem após cada questão. 3 vidas por tentativa.</p>
     <div class="grid" id="qMenuGrid"></div>
   </section>
 
@@ -272,7 +287,7 @@
   <!-- ===== JOGO 6: MISSÃO SATÉLITE ===== -->
   <section id="misMenu" class="screen">
     <button class="btn btn-ghost btn-sm btnHub">🏠 Início</button>
-    <p style="margin:12px 0 16px; color:var(--muted); font-size:.95rem;">A missão acompanha o caminho da informação: da radiação até uma imagem corrigida e utilizável. É preciso acertar pelo menos <b style="color:var(--accent)">60% de cada fase</b> para avançar.</p>
+    <p class="intro">A missão acompanha o caminho da informação: da radiação até uma imagem corrigida e utilizável. É preciso acertar pelo menos <b style="color:#ffdf6b">60% de cada fase</b> para avançar.</p>
     <div class="grid" id="misGrid"></div>
   </section>
 
@@ -292,7 +307,7 @@
   <!-- ===== JOGO 3: RELACIONE ===== -->
   <section id="relMenu" class="screen">
     <button class="btn btn-ghost btn-sm btnHub">🏠 Início</button>
-    <p style="margin:12px 0 16px; color:var(--muted); font-size:.95rem;">Clique em um cartão e depois no destino correto. 4 rodadas com temas diferentes — os destinos mudam de posição a cada rodada.</p>
+    <p class="intro">Clique em um cartão e depois no destino correto. 4 rodadas com temas diferentes — os destinos mudam de posição a cada rodada.</p>
     <div class="grid" id="relMenuGrid"></div>
   </section>
 
@@ -523,7 +538,7 @@ function renderQ(){
   $('qNum').textContent = QUIZ.idx + 1;
   $('qScore').textContent = QUIZ.score;
   $('qVidas').textContent = QUIZ.vidas;
-  $('qCoins').textContent = QUIZ.coins;
+  $('qCoins').textContent = getBank(jogador);
   $('qBar').style.width = (QUIZ.idx / QUIZ.list.length * 100) + '%';
   const a = DATA.aulas.find(x => x.num === q.aula);
   $('qTag').textContent = 'Aula ' + q.aula + ' — ' + a.titulo + ' • Questão ' + (QUIZ.idx + 1);
@@ -542,7 +557,7 @@ function renderQ(){
 }
 
 /* prêmio do quiz: 10 💰 + bônus por sequência */
-function quizPrize(){ return 10 + (QUIZ.streak * 10); }
+function quizPrize(){ return 10 + (QUIZ.streak - 1) * 10; } // 1º acerto = 10; sequência soma +10
 
 function answerQ(sel){
   const q = QUIZ.list[QUIZ.idx];
@@ -576,7 +591,7 @@ function answerQ(sel){
   fb.innerHTML = `<div class="verdict">${ok ? '✅ Correto!' : '❌ Resposta incorreta — a correta é a alternativa ' + letraC + ' (' + txtC.slice(0, 90) + (txtC.length > 90 ? '…' : '') + ')' + vidaMsg}</div>
     <div>💡 ${q.e}</div>` + (ok ? `<div class="prize">Prêmio: +${valor} 💰 (sequência x${QUIZ.streak})</div>` : '');
   $('qScore').textContent = QUIZ.score;
-  $('qCoins').textContent = QUIZ.coins;
+  $('qCoins').textContent = getBank(jogador);
   if(!ok && QUIZ.vidas === 0 && QUIZ.vidasVis > 0) $('btnNext').textContent = 'Ver resultado 🏁';
   QUIZ.log.push({ q, sel: QUIZ.ord[sel], ok, valor });
   $('btnNext').style.display = 'inline-block';
@@ -633,7 +648,18 @@ function finishQuiz(){
     rv.appendChild(d);
   });
   const bt = $('rBtns'); bt.innerHTML = '';
-  QUIZ.after(bt, pct);
+  if(QUIZ.after){
+    QUIZ.after(bt, pct);
+  } else {
+    const mk = (label, ghost, fn) => {
+      const b = document.createElement('button');
+      b.className = 'btn' + (ghost ? ' btn-ghost' : '');
+      b.textContent = label; b.onclick = fn; bt.appendChild(b);
+    };
+    mk('🔁 Jogar de novo', false, () => startQuiz(QUIZ.filtro));
+    mk('Aulas do quiz', true, openQMenu);
+    mk('🏠 Início', true, () => { buildHub(); openHub(); });
+  }
   show('result');
 }
 
@@ -729,7 +755,7 @@ function startMem(){
   MEM.cards = shuffle(MEM.cards);
   $('mTotal').textContent = MEM.n;
   $('mPares').textContent = 0; $('mMoves').textContent = 0;
-  $('mCoins').textContent = 0; $('mTime').textContent = '0s';
+  $('mCoins').textContent = getBank(jogador); $('mTime').textContent = '0s';
   clearInterval(MEM.timer);
   MEM.timer = setInterval(() => { MEM.secs++; $('mTime').textContent = MEM.secs + 's'; }, 1000);
   renderBoard();
@@ -768,7 +794,7 @@ function flipM(i, el){
         });
         MEM.mat++; MEM.coins += addCoins(15);
         $('mPares').textContent = MEM.mat;
-        $('mCoins').textContent = MEM.coins;
+        $('mCoins').textContent = getBank(jogador);
         MEM.flip = []; MEM.lock = false;
         if(MEM.mat === MEM.n) endMem();
       }, 350);
@@ -817,7 +843,7 @@ function startRel(k){
   REL.rodada = r;
   $('relRod').textContent = 'Rodada ' + 'ABCD'[k] + ' — ' + r.t;
   $('relTot').textContent = REL.total;
-  $('relOk').textContent = 0; $('relErr').textContent = 0; $('relCoins').textContent = 0;
+  $('relOk').textContent = 0; $('relErr').textContent = 0; $('relCoins').textContent = getBank(jogador);
   const cc = $('relCards'); cc.innerHTML = '';
   REL.cardEls = {}; REL.destEls = {};
   shuffle(r.itens.map((it, i) => ({ i, a:it[0] }))).forEach(c => {
@@ -858,7 +884,7 @@ function relDrop(idx, el){
     REL.ok++;
     REL.coins += addCoins(10);
     $('relOk').textContent = REL.ok;
-    $('relCoins').textContent = REL.coins;
+    $('relCoins').textContent = getBank(jogador);
     if(REL.ok === REL.total){
       setTimeout(() => {
         showEnd({
@@ -888,7 +914,7 @@ function startQuem(){
   QUEM.list = shuffle(DATA.quem.map(q => q.r)).slice(0, 6);
   QUEM.i = 0; QUEM.coins = 0;
   $('quemTot').textContent = QUEM.list.length;
-  $('quemCoins').textContent = 0;
+  $('quemCoins').textContent = getBank(jogador);
   show('quemScr');
   nextQuem();
 }
@@ -943,7 +969,7 @@ function answerQuem(o, btn, r){
   fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
   fb.innerHTML = `<div class="verdict">${ok ? '✅ É ' + r.r + '!' : '❌ Não é essa — a resposta é: ' + r.r}</div>
     <div>💡 ${x.exp || r.pista}</div>` + (ok ? `<div class="prize">Prêmio: +${valor} 💰 (com ${QUEM.hint} pista(s) revelada(s))</div>` : '');
-  if(ok){ QUEM.coins += valor; $('quemCoins').textContent = QUEM.coins; }
+  if(ok){ QUEM.coins += valor; $('quemCoins').textContent = getBank(jogador); }
   $('btnQuemNext').style.display = 'inline-block';
 }
 /* QUEM.val não é mais usado (prêmio calculado na hora da resposta) */
@@ -966,7 +992,7 @@ function startVf(){
   VF.list = shuffle(DATA.vf).slice(0, 10);
   VF.i = 0; VF.ok = 0; VF.combo = 0; VF.bestCombo = 0; VF.coins = 0;
   $('vfTot').textContent = VF.list.length;
-  $('vfCoins').textContent = 0; $('vfCombo').textContent = 0;
+  $('vfCoins').textContent = getBank(jogador); $('vfCombo').textContent = 0;
   show('vfScr');
   renderVf();
 }
@@ -991,7 +1017,7 @@ function vfAnswer(cho){
     VF.coins += addCoins(valor);
   } else { VF.combo = 0; }
   $('vfCombo').textContent = VF.combo;
-  $('vfCoins').textContent = VF.coins;
+  $('vfCoins').textContent = getBank(jogador);
   const fb = $('vfFb');
   fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
   fb.innerHTML = `<div class="verdict">${ok ? '✅ Correto!' : '❌ Incorreto — a afirmação é ' + (v.v ? 'VERDADEIRA' : 'FALSA') + '.'}</div>
@@ -1024,7 +1050,7 @@ function startDet(){
   DET.list = shuffle(DATA.detetive).slice(0, 8);
   DET.i = 0; DET.ok = 0; DET.coins = 0;
   $('detTot').textContent = 8;
-  $('detCoins').textContent = 0; $('detOk').textContent = 0;
+  $('detCoins').textContent = getBank(jogador); $('detOk').textContent = 0;
   show('detScr');
   renderDet();
 }
@@ -1047,7 +1073,7 @@ function detAnswer(cho){
     DET.coins += addCoins(15);
   }
   $('detOk').textContent = DET.ok;
-  $('detCoins').textContent = DET.coins;
+  $('detCoins').textContent = getBank(jogador);
   const fb = $('detFb');
   fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
   fb.innerHTML = `<div class="verdict">${ok ? '🚩 Bem visto — a frase contém um erro conceitual!' : '❌ A frase PARECE correta, mas contém um erro!'}</div>
@@ -1084,7 +1110,7 @@ function startClas(){
   CLAS.total = items.length;
   CLAS.ok = 0; CLAS.err = 0; CLAS.coins = 0; CLAS.i = 0; CLAS.busy = false;
   $('clasTot').textContent = CLAS.total;
-  $('clasErr').textContent = 0; $('clasCoins').textContent = 0;
+  $('clasErr').textContent = 0; $('clasCoins').textContent = getBank(jogador);
   buildClasCats();
   show('clasScr');
   renderClas();
@@ -1113,7 +1139,7 @@ function clasPick(ci, btn){
     CLAS.busy = true;
     CLAS.ok++;
     CLAS.coins += addCoins(10);
-    $('clasCoins').textContent = CLAS.coins;
+    $('clasCoins').textContent = getBank(jogador);
     $('clasFb').className = 'feedback show ok';
     $('clasFb').innerHTML = `<div class="verdict">✔ ${it.lab} → ${DATA.classif[ci].cat}</div><div>💰 +10</div>`;
     CLAS.i++;
